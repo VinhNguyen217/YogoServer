@@ -30,6 +30,11 @@ public class UserController {
 
 	@Autowired
 	private UserService service;
+	
+	@GetMapping()
+	public List<User> listAll(){
+		return service.listAll();
+	}
 
 	@PostMapping("")
 	public ResponseEntity<HashMap<String, Object>> register(@RequestBody User user) {
