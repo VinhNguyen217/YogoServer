@@ -9,21 +9,22 @@ import javax.persistence.Id;
 public class User {
 	
 	private Integer id_user;
-	
+	private char type;
 	private String first_name;
 	private String last_name;
 	private String address;
 	private Integer gender;
 	private String email;
 	
-	
 	public User() {
 		super();
 	}
-	
-	public User(Integer id_user, String first_name, String last_name, String address, Integer gender, String email) {
+
+	public User(Integer id_user, char type, String first_name, String last_name, String address, Integer gender,
+			String email) {
 		super();
 		this.id_user = id_user;
+		this.type = type;
 		this.first_name = first_name;
 		this.last_name = last_name;
 		this.address = address;
@@ -36,8 +37,15 @@ public class User {
 	public Integer getId_user() {
 		return id_user;
 	}
+	
 	public void setId_user(Integer id_user) {
 		this.id_user = id_user;
+	}
+	public char getType() {
+		return type;
+	}
+	public void setType(char type) {
+		this.type = type;
 	}
 	public String getFirst_name() {
 		return first_name;
@@ -68,15 +76,5 @@ public class User {
 	}
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
-		User user = (User) obj;
-		return this.getId_user() == user.getId_user();
-	}
-	
-
-	
+	}	
 }

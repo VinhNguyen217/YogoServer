@@ -4,62 +4,70 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.yogo.model.Client;
+import com.yogo.model.Driver;
 import com.yogo.model.SessionManager;
 import com.yogo.model.User;
 import com.yogo.service.UserService;
+
+import javassist.expr.Instanceof;
+
 import com.google.common.hash.Hashing;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
-	
+
 	@Autowired
 	private UserService service;
-	
-	@GetMapping("/user")
-	public List<User> list(){
-		return service.listAll();
-	}
-	
-	@PostMapping("/user")
-	public HashMap<String,Boolean> add(@RequestBody User user) {
+
+	@PostMapping("")
+	public ResponseEntity<HashMap<String, Object>> register(@RequestBody User user) {
+		HashMap<String, Object> map = new HashMap<>();
 		service.save(user);
-		HashMap<String, Boolean> map = new HashMap<>();
-		map.put("success", true);
-		return map;
+		map.put("id_user", service.getId());
+		return ResponseEntity.status(HttpStatus.OK).body(map);
 	}
-	
-	@PostMapping("/user/login")
-	public HashMap<String,String> login(@RequestParam Integer id) {
-		HashMap<String, String> map = new HashMap<String, String>();
-		if(service.checkId(id)) {
-			String idSession = Hashing.murmur3_32().hashString(String.valueOf(id),StandardCharsets.UTF_8).toString();
-			if(SessionManager.getInstance().map.containsKey(idSession)) {
-				map.put("Login", "Success");
-			}else {
-				SessionManager.getInstance().map.put(idSession, id);
-			map.put("ID_SESSION", idSession);
+
+	@PostMapping("/login")
+	public ResponseEntity<HashMap<String, Object>> login(@RequestParam Integer id) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		if (service.isIdValid(id)) {
+			String idSession = Hashing.murmur3_32().hashString(String.valueOf(id), StandardCharsets.UTF_8).toString();
+			User user = service.get(id);
+			map.put("session_id", idSession);
+			map.put("info", user);
+			SessionManager.getInstance().map.put(idSession, user);
+			return ResponseEntity.status(HttpStatus.OK).body(map);
+		} else {
+			map.put("session_id", null);
+			map.put("info", null);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+		}
+	}
+
+	@PostMapping("/find")
+	public ResponseEntity<HashMap<String, Object>> findDriver(@RequestHeader(value = "session") String sessionKey) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		if (service.isSessionValid(sessionKey) != null) {
+			if (service.findDriver() != null) {
+				User driver = service.findDriver();
+				map.put("driver", driver);
 			}
-			return map;
+			return ResponseEntity.status(HttpStatus.OK).body(map);
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
 		}
-		throw new RuntimeException("Id is not valid");
 	}
-	
-	@GetMapping("/user/login/{id}")
-	public HashMap<String,Integer> getId(@PathVariable String id) {
-		HashMap<String, Integer> map = new HashMap<>();
-		Integer idUser = SessionManager.getInstance().map.get(id);
-		if(idUser != null) {
-			map.put("ID_USER", idUser);
-			return map;
-		}
-		throw new RuntimeException("ID is not valid ");
-	}
-	
-	
+
 }

@@ -3,11 +3,11 @@ package com.yogo.model;
 import java.util.HashMap;
 
 public class SessionManager {
-	public HashMap<String, Integer> map;
+	public HashMap<String, User> map;
 	private static SessionManager instance = null;
 	
 	private SessionManager() {
-		map = new HashMap<String, Integer>();
+		map = new HashMap<String, User>();
 	}
 	
 	public static SessionManager getInstance() {
@@ -16,4 +16,5 @@ public class SessionManager {
 		}
 		return instance;
 	}
+
 }
