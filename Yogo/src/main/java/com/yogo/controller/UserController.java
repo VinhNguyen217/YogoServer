@@ -57,21 +57,7 @@ public class UserController {
 		} else {
 			map.put("session_id", null);
 			map.put("info", null);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
-		}
-	}
-
-	@PostMapping("/find")
-	public ResponseEntity<HashMap<String, Object>> findDriver(@RequestHeader(value = "session") String sessionKey) {
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		if (service.isSessionValid(sessionKey) != null) {
-			if (service.findDriver() != null) {
-				User driver = service.findDriver();
-				map.put("driver", driver);
-			}
 			return ResponseEntity.status(HttpStatus.OK).body(map);
-		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
 		}
 	}
 

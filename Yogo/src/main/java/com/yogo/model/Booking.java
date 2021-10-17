@@ -1,5 +1,7 @@
 package com.yogo.model;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,7 +11,7 @@ import javax.persistence.Id;
 public class Booking {
 	private Integer id_booking;
 	private Integer number;
-	private Integer id_timer_booking;
+	private Timestamp timer;
 	private Integer id_service;
 	private String pick_location;
 	private String destination_location;
@@ -18,12 +20,12 @@ public class Booking {
 		super();
 	}
 
-	public Booking(Integer id_booking, Integer number, Integer id_timer_booking, Integer id_service,
+	public Booking(Integer id_booking, Integer number, Timestamp timer, Integer id_service,
 			String pick_location, String destination_location) {
 		super();
 		this.id_booking = id_booking;
 		this.number = number;
-		this.id_timer_booking = id_timer_booking;
+		this.timer = timer;
 		this.id_service = id_service;
 		this.pick_location = pick_location;
 		this.destination_location = destination_location;
@@ -47,12 +49,12 @@ public class Booking {
 		this.number = number;
 	}
 
-	public Integer getId_timer_booking() {
-		return id_timer_booking;
+	public Timestamp getTimer() {
+		return timer;
 	}
 
-	public void setId_timer_booking(Integer id_timer_booking) {
-		this.id_timer_booking = id_timer_booking;
+	public void setTimer(Timestamp timer) {
+		this.timer = timer;
 	}
 
 	public Integer getId_service() {

@@ -16,4 +16,11 @@ public class BookingService {
 		repo.save(booking);
 	}
 	
+	public Booking findLastBooking() {
+		return repo.findLastBooking();
+	}
+	
+	public Booking findById(Integer id) {
+		return repo.findById(id).get();
+	}
 }
