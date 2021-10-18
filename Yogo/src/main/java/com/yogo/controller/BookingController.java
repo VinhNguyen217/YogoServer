@@ -40,7 +40,7 @@ public class BookingController {
 	@Autowired
 	private SocketHandler socket;
 
-	@PostMapping()
+	@PostMapping("/create")
 	public ResponseEntity<HashMap<String, Object>> create(@RequestHeader(value = "session") String sessionKey,
 			@RequestBody Booking booking) {
 		HashMap<String, Object> map = new HashMap<>();
@@ -57,7 +57,7 @@ public class BookingController {
 		}
 	}
 
-	@PostMapping("/sendToDriver")
+	@PostMapping("/acceptBooking")
 	public void acceptBooking(@RequestHeader(value = "session") String sessionKey,
 			@RequestParam Integer idBooking) {
 		
@@ -76,6 +76,11 @@ public class BookingController {
 				socket.sendBooking(socketIOClient, bookingInfo, driverSelected);
 			}
 		}
+	}
+	
+	@PostMapping("/cancleBooking")
+	public void cancleBooking() {
+		
 	}
 
 }
