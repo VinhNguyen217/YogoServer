@@ -18,6 +18,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.yogo.exception.MyException;
 import com.yogo.model.Booking;
 import com.yogo.model.BookingInfo;
+import com.yogo.model.Coordinates;
 import com.yogo.model.SocketManager;
 import com.yogo.model.User;
 import com.yogo.service.BookingService;
@@ -47,11 +48,9 @@ public class BookingController {
 		if (userService.isSessionValid(sessionKey) != null) {
 			bookingService.save(booking);
 			Booking b = bookingService.findLastBooking();
-			map.put("success", true);
 			map.put("booking", b);
 			return ResponseEntity.status(HttpStatus.OK).body(map);
 		} else {
-			map.put("success", false);
 			map.put("booking", null);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
 		}
@@ -66,6 +65,8 @@ public class BookingController {
 			if (driverSelected != null) {
 				
 				Booking booking = bookingService.findById(idBooking);	//lấy ra đối tượng Booking
+				booking.setStatus("accept");
+				bookingService.save(booking);
 				User client = userService.isSessionValid(sessionKey);	// Lấy ra đối tượng Client
 				BookingInfo bookingInfo = new BookingInfo(client, booking);	//Tạo đối tượng BookingInfo
 				
@@ -79,8 +80,30 @@ public class BookingController {
 	}
 	
 	@PostMapping("/cancleBooking")
-	public void cancleBooking() {
+	public void cancleBooking(@RequestHeader(value = "session") String sessionKey,
+			@RequestParam Integer idBooking) {
+		if(userService.isSessionValid(sessionKey) != null) {
+			Booking existBooking = bookingService.findById(idBooking);
+			existBooking.setStatus("cancel");	//Cập nhật trạng thái hủy cho booking
+			bookingService.save(existBooking);
+		}
+	}
+	
+	@PostMapping("/setDriverInfo")
+	public void setDriverInfo(@RequestHeader(value = "session") String sessionKey,@RequestParam Integer idDriver) {
+		if(userService.isSessionValid(sessionKey) != null) {
+			User driver = userService.get(idDriver);
+			socket.sendDriverInfo(driver);
+		}
 		
 	}
+	
+	@PostMapping("/setTrackingLocation")
+	public void setTrackingLocation(@RequestHeader(value = "session") String sessionKey,@RequestBody Coordinates location) {
+		if(userService.isSessionValid(sessionKey) != null) {
+			socket.sendTracking(location);
+		}
+	}
+	
 
 }

@@ -23,4 +23,5 @@ public class BookingService {
 	public Booking findById(Integer id) {
 		return repo.findById(id).get();
 	}
+
 }

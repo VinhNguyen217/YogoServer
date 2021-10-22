@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
+import com.yogo.socket.SocketHandler;
 import com.yogo.socket.SocketServer;
 
 @SpringBootApplication

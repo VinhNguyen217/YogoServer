@@ -15,13 +15,14 @@ public class Booking {
 	private Integer id_service;
 	private String pick_location;
 	private String destination_location;
+	private String status;
 
 	public Booking() {
 		super();
 	}
 
 	public Booking(Integer id_booking, Integer number, Timestamp timer, Integer id_service,
-			String pick_location, String destination_location) {
+			String pick_location, String destination_location,String status) {
 		super();
 		this.id_booking = id_booking;
 		this.number = number;
@@ -29,6 +30,7 @@ public class Booking {
 		this.id_service = id_service;
 		this.pick_location = pick_location;
 		this.destination_location = destination_location;
+		this.status = status;
 	}
 
 	@Id
@@ -81,4 +83,12 @@ public class Booking {
 		this.destination_location = destination_location;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
 }
