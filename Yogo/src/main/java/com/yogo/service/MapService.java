@@ -1,6 +1,7 @@
 package com.yogo.service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -30,7 +31,7 @@ public class MapService {
 
 		JSONObject point = resources.getJSONObject("point");
 		JSONArray coordinates = point.getJSONArray("coordinates");
-		
+
 		Gson gson = new Gson();
 		ArrayList<Coordinates> res = gson.fromJson(coordinates.toString(), ArrayList.class);
 		return res;
@@ -39,7 +40,7 @@ public class MapService {
 	public ArrayList<ArrayList<Coordinates>> findPoints(String place) throws IOException {
 		ArrayList<ArrayList<Coordinates>> res = new ArrayList<>();
 		Gson gson = new Gson();
-		
+
 		Request request = new Request.Builder()
 				.url("https://dev.virtualearth.net/REST/v1/Locations?q=" + place + "&key=" + key_map + "").get()
 				.build();
@@ -54,7 +55,7 @@ public class MapService {
 				JSONObject resources = resourceSets.getJSONArray("resources").getJSONObject(i);
 				JSONObject point = resources.getJSONObject("point");
 				JSONArray coordinates = point.getJSONArray("coordinates");
-				
+
 				ArrayList<Coordinates> c = gson.fromJson(coordinates.toString(), ArrayList.class);
 				res.add(c);
 			}
@@ -79,6 +80,18 @@ public class MapService {
 		ArrayList<?> jsonArray = gson.fromJson(coordinates.toString(), ArrayList.class);
 		ArrayList<Coordinates> res = (ArrayList<Coordinates>) jsonArray;
 		return res;
+	}
+
+	public String findPointName(BigDecimal lat, BigDecimal lon) throws IOException {
+		Request request = new Request.Builder()
+				.url("https://dev.virtualearth.net/REST/v1/Locations/" + lat + "," + lon + "?key=" + key_map + "").get()
+				.build();
+		Response response = httpClient.newCall(request).execute();
+		JSONObject data = new JSONObject(response.body().string());
+		JSONObject resourceSets = data.getJSONArray("resourceSets").getJSONObject(0);
+		JSONObject resources = resourceSets.getJSONArray("resources").getJSONObject(0);
+		String name = resources.getString("name");
+		return name;
 	}
 
 }

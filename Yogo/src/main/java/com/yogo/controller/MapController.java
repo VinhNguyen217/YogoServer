@@ -1,6 +1,7 @@
 package com.yogo.controller;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,6 @@ public class MapController {
 		}
 	}
 
-
 	@PostMapping("/route")
 	public ResponseEntity<HashMap<String, Object>> findRoute(@RequestHeader(value = "session") String sessionKey,
 			@RequestParam String p0, @RequestParam String p1) throws IOException {
@@ -53,6 +53,18 @@ public class MapController {
 		} else {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
 		}
+	}
 
+	@PostMapping("/point_name")
+	public ResponseEntity<HashMap<String, Object>> findPointName(@RequestHeader(value = "session") String sessionKey,
+			@RequestParam BigDecimal lat, @RequestParam BigDecimal lon) throws IOException {
+		HashMap<String, Object> map = new HashMap<>();
+		if (userService.isSessionValid(sessionKey) != null) {
+			String name = service.findPointName(lat, lon);
+			map.put("name", name);
+			return ResponseEntity.status(HttpStatus.OK).body(map);
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+		}
 	}
 }
