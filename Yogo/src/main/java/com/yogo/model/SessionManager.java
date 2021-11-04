@@ -7,7 +7,7 @@ public class SessionManager {
 	private static SessionManager instance = null;
 	
 	private SessionManager() {
-		map = new HashMap<String, User>();
+		map = new HashMap<String, User>();		//key : session của user - value : đối tượng user
 	}
 	
 	public static SessionManager getInstance() {

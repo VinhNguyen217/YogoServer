@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
-import com.yogo.exception.MyException;
 import com.yogo.model.Booking;
 import com.yogo.model.BookingInfo;
 import com.yogo.model.Coordinates;
+import com.yogo.model.DriverManagement;
 import com.yogo.model.SocketManager;
 import com.yogo.model.User;
 import com.yogo.service.BookingService;
@@ -56,6 +56,11 @@ public class BookingController {
 		}
 	}
 
+	/**
+	 * appi chấp nhận quốc xe của tài xế
+	 * @param sessionKey
+	 * @param idBooking
+	 */
 	@PostMapping("/acceptBooking")
 	public void acceptBooking(@RequestHeader(value = "session") String sessionKey,
 			@RequestParam Integer idBooking) {
@@ -75,10 +80,16 @@ public class BookingController {
 				SocketIOClient socketIOClient = server.getClient(uuidClient);
 				
 				socket.sendBooking(socketIOClient, bookingInfo, driverSelected);
+				DriverManagement.getInstance().driverWork.add(driverSelected);
 			}
 		}
 	}
 	
+	/**
+	 * api hủy quốc xe của tài xê
+	 * @param sessionKey
+	 * @param idBooking
+	 */
 	@PostMapping("/cancleBooking")
 	public void cancleBooking(@RequestHeader(value = "session") String sessionKey,
 			@RequestParam Integer idBooking) {
@@ -89,6 +100,11 @@ public class BookingController {
 		}
 	}
 	
+	/**
+	 * api lấy thông tin tài xế gửi cho khách
+	 * @param sessionKey
+	 * @param idDriver
+	 */
 	@PostMapping("/setDriverInfo")
 	public void setDriverInfo(@RequestHeader(value = "session") String sessionKey,@RequestParam Integer idDriver) {
 		if(userService.isSessionValid(sessionKey) != null) {
@@ -98,10 +114,33 @@ public class BookingController {
 		
 	}
 	
+	/**
+	 * api theo dõi vị trí 
+	 * @param sessionKey
+	 * @param location
+	 */
 	@PostMapping("/setTrackingLocation")
 	public void setTrackingLocation(@RequestHeader(value = "session") String sessionKey,@RequestBody Coordinates location) {
 		if(userService.isSessionValid(sessionKey) != null) {
 			socket.sendTracking(location);
+		}
+	}
+	
+	/**
+	 * api xử lý kết thúc hành trình
+	 * @param sessionKey
+	 * @return
+	 */
+	@PostMapping("/finishJourney")
+	public ResponseEntity<HashMap<String, Object>> finishJourney(@RequestHeader(value = "session") String sessionKey) {
+		HashMap<String, Object> map = new HashMap<>();
+		if(userService.isSessionValid(sessionKey) != null) {
+			User driver = userService.isSessionValid(sessionKey);	// get driver by sessionKey
+			DriverManagement.getInstance().driverWork.remove(driver);	//remove driver from list driver is working
+			map.put("status", "complete");
+			return ResponseEntity.status(HttpStatus.OK).body(map);
+		}else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
 		}
 	}
 	
