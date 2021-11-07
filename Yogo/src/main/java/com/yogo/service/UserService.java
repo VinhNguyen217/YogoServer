@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.yogo.model.Client;
 import com.yogo.model.Driver;
+import com.yogo.model.DriverManager;
 import com.yogo.model.SessionManager;
 import com.yogo.model.User;
 import com.yogo.repository.UserRepository;
@@ -55,7 +56,7 @@ public class UserService {
 		List<User> users = listAll();
 		User user = new User();
 		for (User u : users) {
-			if(u.getId_user() == id) {
+			if (u.getId_user() == id) {
 				user = u;
 			}
 		}
@@ -101,12 +102,15 @@ public class UserService {
 
 	/**
 	 * Find driver for user
+	 * 
 	 * @return
 	 */
 	public User findDriver() {
-		List<User> drivers = getDriverAll();
-		Random r = new Random();
-		int n = r.nextInt(drivers.size()+1);
-		return drivers.get(n);
+//		ArrayList<User> drivers = DriverManager.getInstance().driverWait;	//Lấy ra danh sách những driver đang chờ
+//		Random r = new Random();
+//		int n = r.nextInt(drivers.size() + 1);
+		User driver = repo.findById(15).get();
+		return driver;
+//		return drivers.get(n);
 	}
 }

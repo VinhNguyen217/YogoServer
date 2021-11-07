@@ -18,7 +18,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.yogo.model.Booking;
 import com.yogo.model.BookingInfo;
 import com.yogo.model.Coordinates;
-import com.yogo.model.DriverManagement;
+import com.yogo.model.DriverManager;
 import com.yogo.model.SocketManager;
 import com.yogo.model.User;
 import com.yogo.service.BookingService;
@@ -57,7 +57,7 @@ public class BookingController {
 	}
 
 	/**
-	 * appi chấp nhận quốc xe của tài xế
+	 * appi chấp nhận đặt xe
 	 * @param sessionKey
 	 * @param idBooking
 	 */
@@ -67,11 +67,13 @@ public class BookingController {
 		
 		if (userService.isSessionValid(sessionKey) != null) {
 			User driverSelected = userService.findDriver();	//Tìm ra lái xe
+			
 			if (driverSelected != null) {
 				
 				Booking booking = bookingService.findById(idBooking);	//lấy ra đối tượng Booking
 				booking.setStatus("accept");
 				bookingService.save(booking);
+				
 				User client = userService.isSessionValid(sessionKey);	// Lấy ra đối tượng Client
 				BookingInfo bookingInfo = new BookingInfo(client, booking);	//Tạo đối tượng BookingInfo
 				
@@ -80,13 +82,15 @@ public class BookingController {
 				SocketIOClient socketIOClient = server.getClient(uuidClient);
 				
 				socket.sendBooking(socketIOClient, bookingInfo, driverSelected);
-				DriverManagement.getInstance().driverWork.add(driverSelected);
+				
+//				DriverManager.getInstance().driverWork.add(driverSelected);
+//				DriverManager.getInstance().driverWait.remove(driverSelected);
 			}
 		}
 	}
 	
 	/**
-	 * api hủy quốc xe của tài xê
+	 * api hủy đơn đặt xe
 	 * @param sessionKey
 	 * @param idBooking
 	 */
@@ -111,7 +115,6 @@ public class BookingController {
 			User driver = userService.get(idDriver);
 			socket.sendDriverInfo(driver);
 		}
-		
 	}
 	
 	/**
@@ -135,8 +138,9 @@ public class BookingController {
 	public ResponseEntity<HashMap<String, Object>> finishJourney(@RequestHeader(value = "session") String sessionKey) {
 		HashMap<String, Object> map = new HashMap<>();
 		if(userService.isSessionValid(sessionKey) != null) {
-			User driver = userService.isSessionValid(sessionKey);	// get driver by sessionKey
-			DriverManagement.getInstance().driverWork.remove(driver);	//remove driver from list driver is working
+			User driver = userService.isSessionValid(sessionKey);	// lấy ra driver dựa vào sessionId
+			DriverManager.getInstance().driverWork.remove(driver);	// Xóa driver khỏi danh sách đang làm việc
+			DriverManager.getInstance().driverWait.add(driver);		//Thêm driver vào danh sách chờ
 			map.put("status", "complete");
 			return ResponseEntity.status(HttpStatus.OK).body(map);
 		}else {

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yogo.model.Client;
 import com.yogo.model.Driver;
+import com.yogo.model.DriverManager;
 import com.yogo.model.SessionManager;
 import com.yogo.model.User;
 import com.yogo.service.UserService;
@@ -53,6 +54,10 @@ public class UserController {
 			map.put("session_id", idSession);
 			map.put("info", user);
 			SessionManager.getInstance().map.put(idSession, user);
+			
+			if(user.getType() == 'd') {
+				DriverManager.getInstance().driverWait.add(user);
+			}
 			return ResponseEntity.status(HttpStatus.OK).body(map);
 		} else {
 			map.put("session_id", null);
