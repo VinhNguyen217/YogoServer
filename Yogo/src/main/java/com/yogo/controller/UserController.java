@@ -55,6 +55,7 @@ public class UserController {
 			map.put("info", user);
 			SessionManager.getInstance().map.put(idSession, user);
 			
+			
 			if(user.getType() == 'd') {
 				DriverManager.getInstance().driverWait.add(user);
 			}

@@ -106,11 +106,19 @@ public class UserService {
 	 * @return
 	 */
 	public User findDriver() {
-//		ArrayList<User> drivers = DriverManager.getInstance().driverWait;	//Lấy ra danh sách những driver đang chờ
-//		Random r = new Random();
-//		int n = r.nextInt(drivers.size() + 1);
-		User driver = repo.findById(15).get();
-		return driver;
-//		return drivers.get(n);
+		ArrayList<User> drivers = DriverManager.getInstance().driverWait; // Lấy ra danh sách những driver đang chờ
+		if (drivers.size() == 1) {
+			return drivers.get(0);
+		} else if (drivers.size() > 1) {
+			Random r = new Random();
+			int n = r.nextInt(drivers.size());
+			return drivers.get(n);
+		} else {
+			return null;
+		}
+	}
+	
+	public User findById(Integer id) {
+		return repo.findById(id).get();
 	}
 }

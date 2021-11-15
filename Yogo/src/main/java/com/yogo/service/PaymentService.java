@@ -6,8 +6,6 @@ import java.util.HashMap;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
 import com.yogo.model.Payment;
 import com.yogo.repository.PaymentRepository;
 
@@ -31,6 +29,10 @@ public class PaymentService {
 
 	public void save(Payment payment) {
 		repo.save(payment);
+	}
+	
+	public Payment findLastPayment() {
+		return repo.findLastPayment();
 	}
 	
 	/**
@@ -57,6 +59,8 @@ public class PaymentService {
 		float calPrice = travelDistance * s.getPrice();
 		map.put("travelDistance", travelDistance);
 		map.put("calPrice", calPrice);
+		Payment p = new Payment(null,calPrice);
+		repo.save(p);
 		return map;
 	}
 }

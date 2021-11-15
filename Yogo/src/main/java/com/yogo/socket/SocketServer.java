@@ -1,7 +1,13 @@
 package com.yogo.socket;
 
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.Configuration;
@@ -9,11 +15,18 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
+import com.corundumstudio.socketio.listener.DisconnectListener;
+import com.yogo.model.DriverManager;
 import com.yogo.model.SessionManager;
 import com.yogo.model.SocketManager;
 import com.yogo.model.User;
+import com.yogo.service.UserService;
 
 public class SocketServer {
+
+	@Autowired
+	private static UserService userService;
+
 	public final static SocketIOServer server = init();
 
 	public static SocketIOServer init() {
