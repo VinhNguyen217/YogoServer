@@ -50,6 +50,7 @@ public class BookingController {
 	public ResponseEntity<HashMap<String, Object>> create(@RequestHeader(value = "session") String sessionKey,
 			@RequestBody Booking booking) {
 		HashMap<String, Object> map = new HashMap<>();
+
 		if (userService.isSessionValid(sessionKey) != null) {
 			bookingService.save(booking);
 			Booking b = bookingService.findLastBooking();
