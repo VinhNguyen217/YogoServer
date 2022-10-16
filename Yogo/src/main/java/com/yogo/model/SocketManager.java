@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import com.corundumstudio.socketio.SocketIOClient;
 
-
 public class SocketManager {
 	public HashMap<Integer, UUID> map;
 	public ArrayList<SocketIOClient> socketClientList;
