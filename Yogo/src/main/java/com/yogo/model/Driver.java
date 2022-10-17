@@ -1,7 +1,12 @@
 package com.yogo.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
 public class Driver extends User {
-	
+
 	public Driver() {
 		super();
 	}

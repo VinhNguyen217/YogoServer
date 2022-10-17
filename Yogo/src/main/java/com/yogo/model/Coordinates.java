@@ -1,36 +1,16 @@
 package com.yogo.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Coordinates {
 	private BigDecimal latitude;	// Vĩ độ
 	private BigDecimal longitude;	// Kinh độ
-	
-	public Coordinates() {
-	
-	}
-	
-	public Coordinates(BigDecimal latitude, BigDecimal longitude) {
-		this.latitude = latitude;
-		this.longitude = longitude;
-	}
-
-	public BigDecimal getLatitude() {
-		return latitude;
-	}
-
-
-	public void setLatitude(BigDecimal latitude) {
-		this.latitude = latitude;
-	}
-
-
-	public BigDecimal getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(BigDecimal longitude) {
-		this.longitude = longitude;
-	}
 
 }
