@@ -41,14 +41,10 @@ public class BookingController {
     @Autowired
     private SocketHandler socket;
 
-    @GetMapping("/test")
-    public ResponseEntity<?> test() {
-        return ResponseEntity.ok("Hello");
-    }
-
     @PostMapping("/create")
     public ResponseEntity<HashMap<String, Object>> create(@RequestHeader(value = "session") String sessionKey,
                                                           @RequestBody Booking booking) {
+
         HashMap<String, Object> map = new HashMap<>();
 
         if (userService.isSessionValid(sessionKey) != null) {

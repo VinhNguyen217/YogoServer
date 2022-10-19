@@ -3,6 +3,7 @@ package com.yogo.service;
 import java.io.IOException;
 import java.util.HashMap;
 
+import com.yogo.model.Function;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class PaymentService {
 	private PaymentRepository repo;
 	
 	@Autowired
-	private SerService serService;
+	private FunctionService functionService;
 
 	public void save(Payment payment) {
 		repo.save(payment);
@@ -54,7 +55,7 @@ public class PaymentService {
 		JSONObject resourceSets = data.getJSONArray("resourceSets").getJSONObject(0);
 		JSONObject resources = resourceSets.getJSONArray("resources").getJSONObject(0);
 		float travelDistance = resources.getFloat("travelDistance");
-		com.yogo.model.Service s = serService.get(id_service);
+		Function s = functionService.getById(id_service);
 		
 		float calPrice = travelDistance * s.getPrice();
 		map.put("travelDistance", travelDistance);

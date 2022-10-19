@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "service")
-public class Service {
+public class Function {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_service;
