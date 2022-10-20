@@ -6,12 +6,12 @@ import org.springframework.http.ResponseEntity;
 
 @Data
 public class ResponseMessage {
-    private int errorCode;
+    private int code;
     private String message;
     private Object result;
 
     public ResponseMessage(Object result) {
-        this.errorCode = HttpStatus.OK.value();
+        this.code = HttpStatus.OK.value();
         this.message = "Successful";
         this.result = result;
     }

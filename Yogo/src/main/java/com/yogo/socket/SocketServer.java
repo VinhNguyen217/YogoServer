@@ -45,7 +45,6 @@ public class SocketServer {
 
 					@Override
 					public void run() {
-//						System.out.println(time);
 						if (SocketManager.getInstance().socketClientList.contains(client)) {
 							status = true;
 							t.cancel();
@@ -72,7 +71,6 @@ public class SocketServer {
 					SocketManager.getInstance().map.put(user.getId_user(), client.getSessionId());
 					SocketManager.getInstance().socketClientList.add(client);
 					client.sendEvent("auth", "Kết nối thành công"); // Gửi tin nhắn đến phía client
-//					System.out.println("Kết nối thành công");
 				}
 			}
 		});

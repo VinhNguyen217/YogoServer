@@ -3,6 +3,7 @@ package com.yogo.controller;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,42 +30,42 @@ import com.google.common.hash.Hashing;
 @RequestMapping("/users")
 public class UserController {
 
-	@Autowired
-	private UserService service;
-	
-	@GetMapping()
-	public List<User> listAll(){
-		return service.listAll();
-	}
+    @Autowired
+    private UserService service;
 
-	@PostMapping("")
-	public ResponseEntity<HashMap<String, Object>> register(@RequestBody User user) {
-		HashMap<String, Object> map = new HashMap<>();
-		service.save(user);
-		map.put("id_user", service.getId());
-		return ResponseEntity.status(HttpStatus.OK).body(map);
-	}
+    @GetMapping()
+    public List<User> listAll() {
+        return service.listAll();
+    }
 
-	@PostMapping("/login")
-	public ResponseEntity<HashMap<String, Object>> login(@RequestParam Integer id) {
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		if (service.isIdValid(id)) {
-			String idSession = Hashing.murmur3_32().hashString(String.valueOf(id), StandardCharsets.UTF_8).toString();
-			User user = service.get(id);
-			map.put("session_id", idSession);
-			map.put("info", user);
-			SessionManager.getInstance().map.put(idSession, user);
-			
-			
-			if(user.getType() == 'd') {
-				DriverManager.getInstance().driverWait.add(user);
-			}
-			return ResponseEntity.status(HttpStatus.OK).body(map);
-		} else {
-			map.put("session_id", null);
-			map.put("info", null);
-			return ResponseEntity.status(HttpStatus.OK).body(map);
-		}
-	}
+    @PostMapping("")
+    public ResponseEntity<?> register(@RequestBody User user) {
+        HashMap<String, Object> map = new HashMap<>();
+        service.save(user);
+        map.put("id_user", service.getId());
+        return ResponseEntity.status(HttpStatus.OK).body(map);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<HashMap<String, Object>> login(@RequestParam Integer id) {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        if (service.isIdValid(id)) {
+            String idSession = Hashing.murmur3_32().hashString(String.valueOf(id), StandardCharsets.UTF_8).toString();
+            User user = service.get(id);
+            map.put("session_id", idSession);
+            map.put("info", user);
+            SessionManager.getInstance().map.put(idSession, user);
+
+
+            if (user.getType() == 'd') {
+                DriverManager.getInstance().driverWait.add(user);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(map);
+        } else {
+            map.put("session_id", null);
+            map.put("info", null);
+            return ResponseEntity.status(HttpStatus.OK).body(map);
+        }
+    }
 
 }
