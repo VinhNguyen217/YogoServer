@@ -32,7 +32,7 @@ public class SocketServer {
 	public static SocketIOServer init() {
 		Configuration config = new Configuration();
 		config.setHostname("0.0.0.0");
-		config.setPort(9001);
+		config.setPort(8086);
 		final SocketIOServer server = new SocketIOServer(config);
 
 		server.addConnectListener(new ConnectListener() {
