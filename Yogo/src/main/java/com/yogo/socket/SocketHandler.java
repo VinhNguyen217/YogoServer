@@ -46,7 +46,7 @@ public class SocketHandler {
 	/**
 	 * Gửi thông tin lái xe cho khách hàng
 	 * 
-	 * @param user
+	 * @param
 	 */
 	@OnEvent(value = "driver_info")
 	public void sendDriverInfo(SocketIOClient driver, User driverInfo, Integer idClient) {

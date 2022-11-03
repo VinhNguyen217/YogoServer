@@ -13,11 +13,11 @@ public class SerService {
 	@Autowired
 	private ServiceRepository repo;
 	
-	public List<com.yogo.model.Service> listAll(){
+	public List<com.yogo.model.Service> getAll(){
 		return repo.findAll();
 	}
 		
-	public com.yogo.model.Service get(Integer id){
+	public com.yogo.model.Service getById(Integer id){
 		return repo.findById(id).get();
 	}
 }

@@ -54,7 +54,7 @@ public class PaymentService {
 		JSONObject resourceSets = data.getJSONArray("resourceSets").getJSONObject(0);
 		JSONObject resources = resourceSets.getJSONArray("resources").getJSONObject(0);
 		float travelDistance = resources.getFloat("travelDistance");
-		com.yogo.model.Service s = serService.get(id_service);
+		com.yogo.model.Service s = serService.getById(id_service);
 		
 		float calPrice = travelDistance * s.getPrice();
 		map.put("travelDistance", travelDistance);
