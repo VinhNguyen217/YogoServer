@@ -1,8 +1,7 @@
 package com.yogo.model;
 
-import lombok.AllArgsConstructor;
+import com.yogo.enums.Gender;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 public class Client extends User {
@@ -11,7 +10,7 @@ public class Client extends User {
         super();
     }
 
-    public Client(Integer id, char type, String first_name, String last_name, String address, Integer gender,
+    public Client(Integer id, char type, String first_name, String last_name, String address, Gender gender,
                   String email) {
         super(id, type, first_name, last_name, address, gender, email);
     }

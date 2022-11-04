@@ -16,7 +16,8 @@ import javax.persistence.*;
 public class Oder {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id_oder;
+	@Column(name = "id_oder")
+	private Integer oderId;
 
 	private Date accept_time;
 

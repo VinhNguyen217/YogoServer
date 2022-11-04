@@ -8,20 +8,16 @@ import com.yogo.repository.BookingRepository;
 
 @Service
 public class BookingService {
-	
-	@Autowired
-	private BookingRepository repo;
-	
-	public void save(Booking booking) {
-		repo.save(booking);
-	}
-	
-	public Booking findLastBooking() {
-		return repo.findLastBooking();
-	}
-	
-	public Booking findById(Integer id) {
-		return repo.findById(id).get();
-	}
+
+    @Autowired
+    private BookingRepository repo;
+
+    public Booking save(Booking booking) {
+        return repo.save(booking);
+    }
+
+    public Booking findById(Integer id) {
+        return repo.findById(id).get();
+    }
 
 }

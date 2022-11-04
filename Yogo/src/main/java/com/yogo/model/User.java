@@ -1,5 +1,6 @@
 package com.yogo.model;
 
+import com.yogo.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,19 +14,21 @@ import javax.persistence.*;
 @Table(name = "user")
 public class User {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id_user;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_user")
+    private Integer userId;
 
-	private char type;
+    private char type;
 
-	private String first_name;
+    private String first_name;
 
-	private String last_name;
+    private String last_name;
 
-	private String address;
+    private String address;
 
-	private Integer gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
-	private String email;
+    private String email;
 }

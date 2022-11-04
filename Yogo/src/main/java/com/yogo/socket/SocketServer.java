@@ -1,11 +1,7 @@
 package com.yogo.socket;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,8 +11,6 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
-import com.corundumstudio.socketio.listener.DisconnectListener;
-import com.yogo.model.DriverManager;
 import com.yogo.model.SessionManager;
 import com.yogo.model.SocketManager;
 import com.yogo.model.User;
@@ -69,7 +63,7 @@ public class SocketServer {
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
 				if (SessionManager.getInstance().map.get(data) != null) {
 					User user = SessionManager.getInstance().map.get(data);
-					SocketManager.getInstance().map.put(user.getId_user(), client.getSessionId());
+					SocketManager.getInstance().map.put(user.getUserId(), client.getSessionId());
 					SocketManager.getInstance().socketClientList.add(client);
 					client.sendEvent("auth", "Kết nối thành công"); // Gửi tin nhắn đến phía client
 //					System.out.println("Kết nối thành công");

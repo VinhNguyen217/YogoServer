@@ -18,13 +18,14 @@ public class Booking {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id_booking;
+	@Column(name = "id_booking")
+	private Integer bookingId;
 
 	private Integer number;
 
 	private Timestamp timer;
 
-	private Integer id_service;
+	private Integer serviceId;
 
 	private String pick_location;
 

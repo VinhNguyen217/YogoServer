@@ -15,11 +15,12 @@ public class Bookmark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_bookmark;
+    @Column(name = "id_bookmark")
+    private Integer bookmarkId;
 
     private String name;
 
-    private Integer id_user;
+    private Integer userId;
 
     private String default_location;
 }

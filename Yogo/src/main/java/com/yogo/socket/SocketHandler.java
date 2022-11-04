@@ -22,7 +22,7 @@ public class SocketHandler {
 	 */
 	@OnEvent(value = "booking")
 	public void sendBooking(SocketIOClient client, BookingInfo data, User driver) {
-		Integer idDriver = driver.getId_user(); // Lấy id của driver
+		Integer idDriver = driver.getUserId(); // Lấy id của driver
 		if (SocketManager.getInstance().map.get(idDriver) != null) {
 			UUID uuid = SocketManager.getInstance().map.get(idDriver); // lấy ra id socket của driver
 			SocketServer.server.getClient(uuid).sendEvent("booking", data);

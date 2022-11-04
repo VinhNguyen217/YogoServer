@@ -14,7 +14,8 @@ import javax.persistence.*;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_payment;
+    @Column(name = "id_payment")
+    private Integer paymentId;
 
     private float price;
 }
