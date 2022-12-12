@@ -14,62 +14,69 @@ import com.corundumstudio.socketio.listener.DataListener;
 import com.yogo.model.SessionManager;
 import com.yogo.model.SocketManager;
 import com.yogo.model.User;
-import com.yogo.service.UserService;
+import com.yogo.business.auth.UserService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SocketServer {
 
-	@Autowired
-	private static UserService userService;
+    @Autowired
+    private static UserService userService;
 
-	public final static SocketIOServer server = init();
+    @Value(value = "${socket-server.port}")
+    private static String port;
 
-	public static SocketIOServer init() {
-		Configuration config = new Configuration();
-		config.setHostname("0.0.0.0");
-		config.setPort(8086);
-		final SocketIOServer server = new SocketIOServer(config);
+    @Value(value = "${socket-server.host}")
+    private static String host;
 
-		server.addConnectListener(new ConnectListener() {
-			@Override
-			public void onConnect(SocketIOClient client) {
-				Timer t = new Timer();
-				TimerTask task = new TimerTask() {
-					int time = 2;
-					boolean status = false;
+    public final static SocketIOServer server = init();
 
-					@Override
-					public void run() {
-//						System.out.println(time);
-						if (SocketManager.getInstance().socketClientList.contains(client)) {
-							status = true;
-							t.cancel();
-						}
-						if (time == 0) {
-							t.cancel();
-							if (status == false) {
-								client.disconnect();
-							}
-						}
-						time--;
-					}
-				};
-				t.schedule(task, 1000, 1000);
+    public static SocketIOServer init() {
+        Configuration config = new Configuration();
+        config.setHostname("0.0.0.0");
+        config.setPort(8086);
+        final SocketIOServer server = new SocketIOServer(config);
 
-			}
-		});
+        server.addConnectListener(new ConnectListener() {
+            @Override
+            public void onConnect(SocketIOClient client) {
+                Timer t = new Timer();
+                TimerTask task = new TimerTask() {
+                    int time = 2;
+                    boolean status = false;
 
-		server.addEventListener("auth", String.class, new DataListener<String>() {
-			@Override
-			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
-				if (SessionManager.getInstance().map.get(data) != null) {
-					User user = SessionManager.getInstance().map.get(data);
-					SocketManager.getInstance().map.put(user.getUserId(), client.getSessionId());
-					SocketManager.getInstance().socketClientList.add(client);
-					client.sendEvent("auth", "Kết nối thành công"); // Gửi tin nhắn đến phía client
-//					System.out.println("Kết nối thành công");
-				}
-			}
-		});
-		return server;
-	}
+                    @Override
+                    public void run() {
+                        if (SocketManager.getInstance().socketClientList.contains(client)) {
+                            status = true;
+                            t.cancel();
+                        }
+                        if (time == 0) {
+                            t.cancel();
+                            if (status == false) {
+                                client.disconnect();
+                            }
+                        }
+                        time--;
+                    }
+                };
+                t.schedule(task, 1000, 1000);
+            }
+        });
+
+        server.addEventListener("auth", String.class, new DataListener<String>() {
+            @Override
+            public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
+                if (SessionManager.getInstance().map.get(data) != null) {
+                    User user = SessionManager.getInstance().map.get(data);
+                    SocketManager.getInstance().map.put(user.getUserId(), client.getSessionId());
+                    SocketManager.getInstance().socketClientList.add(client);
+                    client.sendEvent("auth", "Kết nối thành công"); // Gửi tin nhắn đến phía client
+                    System.out.println("Kết nối thành công");
+                }
+            }
+        });
+        return server;
+    }
 }

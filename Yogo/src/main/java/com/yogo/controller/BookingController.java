@@ -21,7 +21,7 @@ import com.yogo.model.SocketManager;
 import com.yogo.model.User;
 import com.yogo.service.BookingService;
 import com.yogo.service.PaymentService;
-import com.yogo.service.UserService;
+import com.yogo.business.auth.UserService;
 import com.yogo.socket.SocketHandler;
 import com.yogo.socket.SocketServer;
 import org.springframework.web.client.HttpClientErrorException;
@@ -43,11 +43,6 @@ public class BookingController {
 
     @Autowired
     private SocketHandler socket;
-
-    @GetMapping("/test")
-    public ResponseEntity<?> test() {
-        return ResponseEntity.ok("Hello");
-    }
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestHeader(value = "session") String sessionKey,

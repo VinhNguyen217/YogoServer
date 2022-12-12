@@ -23,7 +23,7 @@ import com.yogo.model.Oder;
 import com.yogo.model.SocketManager;
 import com.yogo.model.User;
 import com.yogo.service.OrderService;
-import com.yogo.service.UserService;
+import com.yogo.business.auth.UserService;
 import com.yogo.socket.SocketHandler;
 import com.yogo.socket.SocketServer;
 import org.springframework.web.client.HttpClientErrorException;

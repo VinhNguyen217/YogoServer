@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yogo.model.Bookmark;
 import com.yogo.model.User;
 import com.yogo.service.BookmarkService;
-import com.yogo.service.UserService;
+import com.yogo.business.auth.UserService;
 import org.springframework.web.client.HttpClientErrorException;
 
 @RestController

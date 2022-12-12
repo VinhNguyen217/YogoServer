@@ -1,6 +1,6 @@
 package com.yogo.model;
 
-import com.yogo.enums.Gender;
+import com.yogo.enums.Role;
 import lombok.Data;
 
 @Data
@@ -10,9 +10,8 @@ public class Client extends User {
         super();
     }
 
-    public Client(Integer id, char type, String first_name, String last_name, String address, Gender gender,
-                  String email) {
-        super(id, type, first_name, last_name, address, gender, email);
+    public Client(Integer id, String username, String email, String phone, String address, String password, Role role) {
+        super(id, username, email, phone, address, password, role);
     }
 
 }

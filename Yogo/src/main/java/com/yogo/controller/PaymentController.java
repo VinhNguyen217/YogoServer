@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yogo.service.PaymentService;
-import com.yogo.service.UserService;
+import com.yogo.business.auth.UserService;
 import org.springframework.web.client.HttpClientErrorException;
 
 @RestController

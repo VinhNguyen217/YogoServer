@@ -1,14 +1,16 @@
 package com.yogo.service;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yogo.dto.PointDto;
 import com.yogo.utils.UrlUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -21,28 +23,35 @@ public class MapService {
     private final OkHttpClient httpClient = new OkHttpClient();
     private final Gson gson = new Gson();
 
-    public HashMap<String, Object> findPoint(String pointFind) throws IOException {
-        ArrayList<ArrayList<Coordinates>> res = new ArrayList<>();
-        HashMap<String, Object> map = new HashMap<>();
+    public List<PointDto> findPoint(String pointFind) throws IOException {
+        List<PointDto> res = new ArrayList<>();
+        List<Coordinates> coordinatesList = new ArrayList<>();
 
         Request request = new Request.Builder().url(UrlUtils.getUrlFindPoint(pointFind)).get().build();
-
         Response response = httpClient.newCall(request).execute();
 
         JSONObject data = new JSONObject(response.body().string());
         JSONObject resourceSets = data.getJSONArray("resourceSets").getJSONObject(0);
-        Integer estimatedTotal = resourceSets.getInt("estimatedTotal");
+        int estimatedTotal = resourceSets.getInt("estimatedTotal");
         if (estimatedTotal > 0) {
             for (int i = 0; i < estimatedTotal; i++) {
                 JSONObject resources = resourceSets.getJSONArray("resources").getJSONObject(i);
                 JSONObject point = resources.getJSONObject("point");
-                JSONArray coordinates = point.getJSONArray("coordinates");
-                ArrayList<Coordinates> c = gson.fromJson(coordinates.toString(), ArrayList.class);
-                res.add(c);
+                JSONArray coordinatesArray = point.getJSONArray("coordinates");
+                ArrayList c = gson.fromJson(coordinatesArray.toString(), ArrayList.class);
+                Coordinates coordinates = new Coordinates().withLat((Double) c.get(0)).withLon((Double) c.get(1));
+                coordinatesList.add(coordinates);
             }
         }
-        map.put("coordinates", res);
-        return map;
+        coordinatesList.forEach((v) -> {
+            try {
+                PointDto pointDto = new PointDto().withLocation(v).withName(findPointName(v.getLat(), v.getLon()));
+                res.add(pointDto);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return res;
     }
 
     public HashMap<String, Object> findRoute(String p0, String p1) throws IOException {
@@ -65,18 +74,14 @@ public class MapService {
         return map;
     }
 
-    public HashMap<String, Object> findPointName(BigDecimal lat, BigDecimal lon) throws IOException {
-        HashMap<String, Object> map = new HashMap<>();
+    public String findPointName(Double lat, Double lon) throws IOException {
         Request request = new Request.Builder().url(UrlUtils.getUrlFindCoordinates(lat, lon)).get().build();
 
         Response response = httpClient.newCall(request).execute();
         JSONObject data = new JSONObject(response.body().string());
         JSONObject resourceSets = data.getJSONArray("resourceSets").getJSONObject(0);
         JSONObject resources = resourceSets.getJSONArray("resources").getJSONObject(0);
-        String name = resources.getString("name");
-
-        map.put("name", name);
-        return map;
+        return resources.getString("name");
     }
 
 }

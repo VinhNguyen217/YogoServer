@@ -1,9 +1,7 @@
 package com.yogo.model;
 
-import com.yogo.enums.Gender;
-import lombok.AllArgsConstructor;
+import com.yogo.enums.Role;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 public class Driver extends User {
@@ -12,8 +10,7 @@ public class Driver extends User {
         super();
     }
 
-    public Driver(Integer id, char type, String first_name, String last_name, String address, Gender gender,
-                  String email) {
-        super(id, type, first_name, last_name, address, gender, email);
+    public Driver(Integer id, String username, String email, String phone, String address, String password, Role role) {
+        super(id, username, email, phone, address, password, role);
     }
 }

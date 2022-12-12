@@ -2,8 +2,6 @@ package com.yogo.utils;
 
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-
 @Service
 public class UrlUtils {
     private static String KEY_MAP = "Ao9PFmQwSXJV1d36fANi1Tbp3sECeIiZPHzuO4G5Hf7Z_0BR0F7RSabbjFi9xf3S";
@@ -24,7 +22,7 @@ public class UrlUtils {
                 .concat("&key=").concat(KEY_MAP);
     }
 
-    public static String getUrlFindCoordinates(BigDecimal lat, BigDecimal lon) {
+    public static String getUrlFindCoordinates(Double lat, Double lon) {
         return BASE_URL_MAP
                 .concat("Locations/")
                 .concat(String.valueOf(lat)).concat(",").concat(String.valueOf(lon))

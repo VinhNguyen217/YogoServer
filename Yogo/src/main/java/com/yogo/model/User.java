@@ -1,9 +1,10 @@
 package com.yogo.model;
 
-import com.yogo.enums.Gender;
+import com.yogo.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.With;
 
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @Table(name = "user")
+@With
 public class User {
 
     @Id
@@ -19,16 +21,12 @@ public class User {
     @Column(name = "id_user")
     private Integer userId;
 
-    private char type;
-
-    private String first_name;
-
-    private String last_name;
-
+    private String username;
+    private String email;
+    private String phone;
     private String address;
+    private String password;
 
     @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    private String email;
+    private Role role;
 }
