@@ -1,6 +1,6 @@
 package com.yogo.controller;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -20,19 +20,19 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.yogo.model.DriverManager;
 import com.yogo.model.Oder;
-import com.yogo.model.SocketManager;
+import com.yogo.socket.SocketManager;
 import com.yogo.model.User;
 import com.yogo.service.OrderService;
 import com.yogo.business.auth.UserService;
 import com.yogo.socket.SocketHandler;
-import com.yogo.socket.SocketServer;
 import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
 @RequestMapping("/order")
 public class OrderController {
 
-    private SocketIOServer server = SocketServer.server;
+    @Autowired
+    private SocketIOServer server;
 
     @Autowired
     private OrderService orderService;
@@ -63,13 +63,13 @@ public class OrderController {
         if (userService.isSessionValid(sessionKey) != null) {
             User driver = userService.isSessionValid(sessionKey); // Lấy ra đối tượng lái xe
 
-            Date acceptTime = new Date();
+            LocalDateTime acceptTime = LocalDateTime.now();
             Oder order = orderService.findById(idOrder);
-            order.setAccept_time(acceptTime);
+            order.setAcceptTime(acceptTime);
             order.setStatus("accept");
             orderService.save(order);
 
-            UUID uuidDriver = SocketManager.getInstance().map.get(driver.getUserId());
+            UUID uuidDriver = SocketManager.getInstance().map.get(driver.getId());
             SocketIOClient socketIOClient = server.getClient(uuidDriver);
 
             socket.sendDriverInfo(socketIOClient, driver, idClient); // Gửi thông tin lái xe cho khách hàng
@@ -86,13 +86,13 @@ public class OrderController {
         if (userService.isSessionValid(sessionKey) != null) {
             User driver = userService.isSessionValid(sessionKey); // Lấy ra đối tượng lái xe
 
-            Date acceptTime = new Date();
+            LocalDateTime acceptTime = LocalDateTime.now();
             Oder order = orderService.findById(idOrder);
-            order.setAccept_time(acceptTime);
+            order.setAcceptTime(acceptTime);
             order.setStatus("cancel");
             orderService.save(order);
 
-            UUID uuidDriver = SocketManager.getInstance().map.get(driver.getUserId());
+            UUID uuidDriver = SocketManager.getInstance().map.get(driver.getId());
             SocketIOClient socketIOClient = server.getClient(uuidDriver);
 
             socket.sendDriverInfo(socketIOClient, null, idClient); // Gửi thông tin là null cho khách hàng

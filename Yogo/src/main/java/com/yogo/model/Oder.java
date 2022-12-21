@@ -2,28 +2,27 @@ package com.yogo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.*;
 
-@Entity
-@Data
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Entity
 @Table(name = "oder")
-public class Oder {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_oder")
-	private Integer oderId;
+public class Oder extends BaseModel {
 
-	private Date accept_time;
+    private LocalDateTime acceptTime;
 
-	private Integer id_user;
+    private Integer userId;
 
-	private Integer id_booking;
+    private Integer bookingId;
 
-	private String status;
+    private String status;
 }

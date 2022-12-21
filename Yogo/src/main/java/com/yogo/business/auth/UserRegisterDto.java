@@ -6,17 +6,16 @@ import com.yogo.validation.PhoneRegex;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRegisterDto {
 
-    @NotNull
-    @NotBlank
+    @Nullable@NotBlank
     private String username;
 
     @EmailRegex

@@ -1,7 +1,6 @@
 package com.yogo.model;
 
 import java.util.ArrayList;
-import com.yogo.model.User;
 
 public class DriverManager {
 	public ArrayList<User> driverWork;		//danh sách những driver đang làm việc

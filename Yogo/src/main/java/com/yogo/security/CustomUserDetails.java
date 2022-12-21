@@ -61,17 +61,16 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    public UserDto getUserInfo() {
-        return objectMapper.convertValue(user, UserDto.class);
+    public User getUserInfo() {
+        return user;
     }
 
     /**
      * Trả về user đang đăng nhập
-     *
      * @return
      */
     public static CustomUserDetails getAuthorizedUser() {
-        return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return customUserDetails;
     }
-
 }

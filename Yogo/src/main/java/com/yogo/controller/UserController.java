@@ -1,6 +1,6 @@
 package com.yogo.controller;
 
-import com.yogo.business.auth.UserLoginDto;
+import com.yogo.business.auth.UserLoginRequest;
 import com.yogo.business.auth.UserRegisterDto;
 import com.yogo.message.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yogo.model.User;
 import com.yogo.business.auth.UserService;
 
 import javax.validation.Valid;
@@ -23,9 +22,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping()
-    public ResponseEntity<?> listAll() {
-        return ResponseMessage.success(userService.listAll());
+    @GetMapping("/current")
+    public ResponseEntity<?> getCurrentUsers() {
+        return ResponseMessage.success(userService.getCurrentUsers());
     }
 
     @PostMapping("/client/register")
@@ -39,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody UserLoginDto userLoginDto) {
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequest userLoginDto) {
         return ResponseMessage.success(userService.login(userLoginDto));
     }
 }

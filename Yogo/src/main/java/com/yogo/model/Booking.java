@@ -1,35 +1,30 @@
 package com.yogo.model;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.sql.Timestamp;
+import com.yogo.enums.Status;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
-@Entity
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
+@Entity
+@With
 @Table(name = "booking")
-public class Booking {
+public class Booking extends BaseModel {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_booking")
-	private Integer bookingId;
+    private Integer serviceId;
 
-	private Integer number;
+    private Integer userId;
 
-	private Timestamp timer;
+    private Double startPoint;
 
-	private Integer serviceId;
+    private Double endPoint;
 
-	private String pick_location;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
-	private String destination_location;
-
-	private String status;
+    private LocalDateTime finishAt;
 }

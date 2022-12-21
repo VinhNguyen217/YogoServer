@@ -1,4 +1,4 @@
-package com.yogo.dto;
+package com.yogo.business.map;
 
 import com.yogo.model.Coordinates;
 import lombok.AllArgsConstructor;

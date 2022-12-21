@@ -1,12 +1,11 @@
-package com.yogo.service;
+package com.yogo.business.map;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yogo.dto.PointDto;
+import com.yogo.business.auth.UserService;
 import com.yogo.utils.UrlUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,13 +16,20 @@ import com.google.gson.Gson;
 import com.yogo.model.Coordinates;
 import okhttp3.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 public class MapService {
 
     private final OkHttpClient httpClient = new OkHttpClient();
     private final Gson gson = new Gson();
 
-    public List<PointDto> findPoint(String pointFind) throws IOException {
+    @Autowired
+    UserService userService;
+
+    public List<PointDto> findPoint(String pointFind, HttpServletRequest servletRequest) throws IOException {
+        userService.checkSession(servletRequest);
+
         List<PointDto> res = new ArrayList<>();
         List<Coordinates> coordinatesList = new ArrayList<>();
 
@@ -45,7 +51,7 @@ public class MapService {
         }
         coordinatesList.forEach((v) -> {
             try {
-                PointDto pointDto = new PointDto().withLocation(v).withName(findPointName(v.getLat(), v.getLon()));
+                PointDto pointDto = new PointDto().withLocation(v).withName(findPointName(v.getLat(), v.getLon(), servletRequest));
                 res.add(pointDto);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -54,7 +60,9 @@ public class MapService {
         return res;
     }
 
-    public HashMap<String, Object> findRoute(String p0, String p1) throws IOException {
+    public HashMap<String, Object> findRoute(String p0, String p1, HttpServletRequest servletRequest) throws IOException {
+        userService.checkSession(servletRequest);
+
         HashMap<String, Object> map = new HashMap<>();
         Request request = new Request.Builder().url(UrlUtils.getUrlFindRoute(p0, p1)).get().build();
 
@@ -74,7 +82,9 @@ public class MapService {
         return map;
     }
 
-    public String findPointName(Double lat, Double lon) throws IOException {
+    public String findPointName(Double lat, Double lon, HttpServletRequest servletRequest) throws IOException {
+        userService.checkSession(servletRequest);
+
         Request request = new Request.Builder().url(UrlUtils.getUrlFindCoordinates(lat, lon)).get().build();
 
         Response response = httpClient.newCall(request).execute();

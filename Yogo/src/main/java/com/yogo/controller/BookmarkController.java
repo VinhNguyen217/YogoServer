@@ -34,7 +34,7 @@ public class BookmarkController {
         HashMap<String, Object> map = new HashMap<>();
         if (userService.isSessionValid(sessionKey) != null) {
             User client = userService.isSessionValid(sessionKey);
-            List<Bookmark> bookmarks = bookmarkService.getAllBookmarksByIdUser(client.getUserId());
+            List<Bookmark> bookmarks = bookmarkService.getAllBookmarksByIdUser(client.getId());
             map.put("bookmarks", bookmarks);
             return ResponseMessage.success(map);
         }

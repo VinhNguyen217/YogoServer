@@ -8,4 +8,5 @@ public class MessageText {
     public static final String PASSWORD_INVALID = "Mật khẩu phải lớn hơn hoặc bằng 8 ký tự";
     public static final String PHONE_INVALID = "Số điện thoại không hợp lệ";
     public static final String LOGIN_FAILED = "Email hoặc mật khâủ không hợp lệ";
+    public static final String NOT_FOUND = "Không tìm thấy";
 }

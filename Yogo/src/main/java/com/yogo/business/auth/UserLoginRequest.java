@@ -5,7 +5,7 @@ import com.yogo.validation.PasswordRegex;
 import lombok.Data;
 
 @Data
-public class UserLoginDto {
+public class UserLoginRequest {
     @EmailRegex
     private String email;
 

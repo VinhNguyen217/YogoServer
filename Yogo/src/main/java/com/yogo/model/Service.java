@@ -2,26 +2,22 @@ package com.yogo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
-@Data
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Entity
 @Table(name = "service")
-public class Service {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_service")
-    private Integer serviceId;
+public class Service extends BaseModel {
 
     private String name;
 
-    private Integer active;
+    private Double price;
 
-    private float price;
-
-    private String detail;
+    private String describe;
 }

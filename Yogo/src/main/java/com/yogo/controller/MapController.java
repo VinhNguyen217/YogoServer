@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yogo.service.MapService;
+import com.yogo.business.map.MapService;
 import com.yogo.business.auth.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/map")
@@ -22,31 +23,23 @@ public class MapController {
     @Autowired
     private MapService mapService;
 
-    @Autowired
-    private UserService userService;
-
     @PostMapping("/point")
-    public ResponseEntity<?> findPoint(@RequestHeader(value = "session") String sessionKey,
-                                       @RequestParam("p") String point) throws IOException {
-        return ResponseMessage.success(mapService.findPoint(point));
+    public ResponseEntity<?> findPoint(@RequestParam("p") String point,
+                                       HttpServletRequest servletRequest) throws IOException {
+        return ResponseMessage.success(mapService.findPoint(point, servletRequest));
     }
 
     @PostMapping("/route")
-    public ResponseEntity<?> findRoute(@RequestHeader(value = "session") String sessionKey,
-                                       @RequestParam String p0, @RequestParam String p1) throws IOException {
-
-//        if (userService.isSessionValid(sessionKey) != null) {
-        return ResponseMessage.success(mapService.findRoute(p0, p1));
-//        }
-//        throw new HttpClientErrorException(HttpStatus.FORBIDDEN, MessageText.FORBIDDEN);
+    public ResponseEntity<?> findRoute(@RequestParam String p0,
+                                       @RequestParam String p1,
+                                       HttpServletRequest servletRequest) throws IOException {
+        return ResponseMessage.success(mapService.findRoute(p0, p1, servletRequest));
     }
 
     @PostMapping("/point_name")
-    public ResponseEntity<?> findPointName(@RequestHeader(value = "session") String sessionKey,
-                                           @RequestParam Double lat, @RequestParam Double lon) throws IOException {
-//        if (userService.isSessionValid(sessionKey) != null) {
-        return ResponseMessage.success(mapService.findPointName(lat, lon));
-//        }
-//        throw new HttpClientErrorException(HttpStatus.FORBIDDEN, MessageText.FORBIDDEN);
+    public ResponseEntity<?> findPointName(@RequestParam Double lat,
+                                           @RequestParam Double lon,
+                                           HttpServletRequest servletRequest) throws IOException {
+        return ResponseMessage.success(mapService.findPointName(lat, lon, servletRequest));
     }
 }

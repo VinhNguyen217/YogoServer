@@ -1,18 +1,16 @@
 package com.yogo.business.auth;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yogo.enums.Role;
 import com.yogo.message.MessageText;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +20,8 @@ import com.yogo.model.User;
 import com.yogo.repository.UserRepository;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 public class UserService {
 
@@ -29,13 +29,19 @@ public class UserService {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private SessionRegistry sessionRegistry;
 
     @Autowired
     private UserRepository userRepository;
 
-    public List<User> listAll() {
-        return userRepository.findAll();
+    @Value("${name-session}")
+    private String name_session;
+
+    public List<UserDto> getCurrentUsers() {
+        return sessionRegistry.getAllPrincipals()
+                .stream()
+                .map(o -> objectMapper.convertValue(o, UserDto.class))
+                .collect(Collectors.toList());
     }
 
     public UserDto createClient(UserRegisterDto user) {
@@ -50,17 +56,12 @@ public class UserService {
         User userCheck = userRepository.findByEmail(userRegisterDto.getEmail());
         if (userCheck != null) throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, MessageText.EMAIL_EXIST);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        User user = new User().withUsername(userRegisterDto.getUsername())
-                .withEmail(userRegisterDto.getEmail())
-                .withPhone(userRegisterDto.getPhone())
-                .withAddress(userRegisterDto.getAddress())
-                .withRole(role)
-                .withPassword(encoder.encode(userRegisterDto.getPassword()));
+        User user = new User().withUsername(userRegisterDto.getUsername()).withEmail(userRegisterDto.getEmail()).withPhone(userRegisterDto.getPhone()).withAddress(userRegisterDto.getAddress()).withRole(role).withPassword(encoder.encode(userRegisterDto.getPassword()));
         User userCreate = userRepository.save(user);
         return objectMapper.convertValue(userCreate, UserDto.class);
     }
 
-    public UserDto login(UserLoginDto userLoginDto) {
+    public UserLoginResponse login(UserLoginRequest userLoginDto) {
         String email = userLoginDto.getEmail();
         String password = userLoginDto.getPassword();
         User userCheck = userRepository.findByEmail(email);
@@ -70,20 +71,27 @@ public class UserService {
             boolean checkPassword = BCrypt.checkpw(password, userCheck.getPassword());
             if (!checkPassword) throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, MessageText.LOGIN_FAILED);
             else {
-                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password);
-                Authentication authentication = authenticationManager.authenticate(token);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                return objectMapper.convertValue(userCheck, UserDto.class);
+                UserDto userDto = objectMapper.convertValue(userCheck, UserDto.class);
+                String sessionId = String.valueOf(UUID.randomUUID());
+                sessionRegistry.registerNewSession(sessionId, userDto);
+                return new UserLoginResponse().withInfo(userDto)
+                        .withSessionId(sessionId);
             }
         }
     }
 
-    /**
-     * Check session to return user
-     *
-     * @param sessionId
-     * @return
-     */
+    public UserDto checkSession(HttpServletRequest servletRequest) {
+        String sessionId = servletRequest.getHeader(name_session);
+        if (sessionId == null)
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, MessageText.FORBIDDEN);
+        SessionInformation sessionInformation = sessionRegistry.getSessionInformation(sessionId);
+        try {
+            return (UserDto) sessionInformation.getPrincipal();
+        } catch (Exception ex) {
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, MessageText.FORBIDDEN);
+        }
+    }
+
     public User isSessionValid(String sessionId) {
         User user = SessionManager.getInstance().map.get(sessionId);
         return user;

@@ -8,5 +8,4 @@ import lombok.Data;
 public class BookingInfo {
 	private User user;
 	private Booking booking;
-	private Payment payment;
 }
