@@ -45,7 +45,7 @@ public class SocketIOConfig {
         server.addEventListener("auth", String.class, new DataListener<String>() {
             @Override
             public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
-                SocketManager.getInstance().map.put(data,client.getSessionId());
+                SocketManager.getInstance().map.put(data,client.getSessionId());    //yêu cầu truyền sesionId từ client vể server
 //                if (SessionManager.getInstance().map.get(data) != null) {
 //                    User user = SessionManager.getInstance().map.get(data);
 //                    SocketManager.getInstance().map.put(user.getId(), client.getSessionId());
@@ -59,10 +59,7 @@ public class SocketIOConfig {
         server.addDisconnectListener(new DisconnectListener() {
             @Override
             public void onDisconnect(SocketIOClient client) {
-                System.out.println("disconect");
-//                client.getNamespace().getAllClients().stream().forEach(data -> {
-//                    log.info("user disconnected " + data.getSessionId().toString());
-//                });
+                System.out.println("disconnect");
             }
         });
         return server;

@@ -1,8 +1,12 @@
 package com.yogo.socket;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.corundumstudio.socketio.SocketIOServer;
+import com.yogo.business.auth.UserService;
+import com.yogo.enums.Role;
+import com.yogo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,12 +15,16 @@ import com.corundumstudio.socketio.annotation.OnEvent;
 import com.yogo.model.BookingInfo;
 import com.yogo.model.Coordinates;
 import com.yogo.model.User;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class SocketHandler {
 
     @Autowired
     private SocketIOServer socketIOServer;
+
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * Gửi thông tin khách hàng và thông tin đặt xe cho lái xe
@@ -56,6 +64,7 @@ public class SocketHandler {
      */
     @OnEvent(value = "driver_info")
     public void sendDriverInfo(SocketIOClient driver, User driverInfo, Integer idClient) {
+        List<User> drivers = userRepository.findByRole(Role.ROLE_DRIVER);
         if (SocketManager.getInstance().map.get(idClient) != null) {
             UUID uuid = SocketManager.getInstance().map.get(idClient); // Lấy ra id socket của client
             socketIOServer.getClient(uuid).sendEvent("driver_info", driverInfo);

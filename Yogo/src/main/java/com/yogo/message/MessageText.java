@@ -9,4 +9,5 @@ public class MessageText {
     public static final String PHONE_INVALID = "Số điện thoại không hợp lệ";
     public static final String LOGIN_FAILED = "Email hoặc mật khâủ không hợp lệ";
     public static final String NOT_FOUND = "Không tìm thấy";
+    public static final String BOOKING_INVALID = "Đặt xe không hợp lệ";
 }

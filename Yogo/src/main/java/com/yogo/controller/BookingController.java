@@ -42,8 +42,8 @@ public class BookingController {
     }
 
     @PostMapping("/acceptBooking")
-    public ResponseEntity<?> acceptBooking(@RequestHeader(value = "session") String sessionKey,
-                                           @RequestParam Integer idBooking) {
+    public ResponseEntity<?> acceptBooking(@RequestBody Integer bookingId,HttpServletRequest servletRequest) {
+
 //        HashMap<String, Object> map = new HashMap<>();
 //        if (userService.isSessionValid(sessionKey) != null) {
 //            User driverSelected = userService.findDriver(); // Tìm ra lái xe

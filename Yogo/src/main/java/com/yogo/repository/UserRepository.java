@@ -1,9 +1,12 @@
 package com.yogo.repository;
 
+import com.yogo.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.yogo.model.User;
+
+import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
@@ -11,4 +14,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     User findLastUser();
 
     User findByEmail(String email);
+
+    List<User> findByRole(Role role);
 }
