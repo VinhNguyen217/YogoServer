@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
-import com.yogo.model.Coordinates;
+import com.yogo.business.map.Coordinates;
 import com.yogo.model.DriverManager;
 import com.yogo.socket.SocketManager;
 import com.yogo.model.User;
@@ -41,8 +41,13 @@ public class BookingController {
         return ResponseMessage.success(bookingService.create(bookingRequest, servletRequest));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable("id") String id, HttpServletRequest servletRequest) {
+        return ResponseMessage.success(bookingService.findById(id, servletRequest));
+    }
+
     @PostMapping("/acceptBooking")
-    public ResponseEntity<?> acceptBooking(@RequestBody Integer bookingId,HttpServletRequest servletRequest) {
+    public ResponseEntity<?> acceptBooking(@RequestBody Integer bookingId, HttpServletRequest servletRequest) {
 
 //        HashMap<String, Object> map = new HashMap<>();
 //        if (userService.isSessionValid(sessionKey) != null) {

@@ -11,7 +11,7 @@ import lombok.With;
 @NoArgsConstructor
 @Data
 @With
-public class BookingDriver {
+public class BookingDriverResult {
     private Booking booking;
     private UserDto driver;
 }

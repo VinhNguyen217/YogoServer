@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.yogo.model.Bookmark;
 
-public interface BookmarkRepository extends JpaRepository<Bookmark, Integer> {
+public interface BookmarkRepository extends JpaRepository<Bookmark, String> {
 	@Query(value = "SELECT * FROM bookmark WHERE id_user = ?1",nativeQuery = true)
-	List<Bookmark> getAllBookmarksByIdUser(Integer id);
+	List<Bookmark> getAllBookmarksByIdUser(String id);
 }

@@ -14,7 +14,7 @@ public class BookmarkService {
 	@Autowired
 	private BookmarkRepository repo;
 	
-	public List<Bookmark> getAllBookmarksByIdUser(Integer id){
+	public List<Bookmark> getAllBookmarksByIdUser(String id){
 		return repo.getAllBookmarksByIdUser(id);
 	}
 }

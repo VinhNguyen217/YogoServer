@@ -1,17 +1,15 @@
-package com.yogo.model;
+package com.yogo.business.map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
 
-import java.math.BigDecimal;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @With
 public class Coordinates {
-    private Double lat;    // Vĩ độ
-    private Double lon;    // Kinh độ
+    private Double latitude;    // Vĩ độ
+    private Double longitude;    // Kinh độ
 }

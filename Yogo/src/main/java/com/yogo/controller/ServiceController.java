@@ -22,7 +22,7 @@ public class ServiceController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable("id") Integer id) {
+    public ResponseEntity<?> getById(@PathVariable("id") String id) {
         return ResponseMessage.success(serService.getById(id));
     }
 

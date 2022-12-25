@@ -61,7 +61,7 @@ public class UserService {
         return objectMapper.convertValue(userCreate, UserDto.class);
     }
 
-    public UserLoginResponse login(UserLoginRequest userLoginDto) {
+    public UserLoginResult login(UserLoginRequest userLoginDto) {
         String email = userLoginDto.getEmail();
         String password = userLoginDto.getPassword();
         User userCheck = userRepository.findByEmail(email);
@@ -74,7 +74,7 @@ public class UserService {
                 UserDto userDto = objectMapper.convertValue(userCheck, UserDto.class);
                 String sessionId = String.valueOf(UUID.randomUUID());
                 sessionRegistry.registerNewSession(sessionId, userDto);
-                return new UserLoginResponse().withInfo(userDto)
+                return new UserLoginResult().withInfo(userDto)
                         .withSessionId(sessionId);
             }
         }

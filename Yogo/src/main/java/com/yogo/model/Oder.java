@@ -20,9 +20,9 @@ public class Oder extends BaseModel {
 
     private LocalDateTime acceptTime;
 
-    private Integer userId;
+    private String userId;
 
-    private Integer bookingId;
+    private String bookingId;
 
     private String status;
 }

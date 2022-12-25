@@ -57,7 +57,7 @@ public class OrderController {
     }
 
     @PostMapping("/acceptBookingRequest")
-    public void acceptBookingRequest(@RequestHeader(value = "session") String sessionKey, @RequestParam Integer idOrder,
+    public void acceptBookingRequest(@RequestHeader(value = "session") String sessionKey, @RequestParam String idOrder,
                                      @RequestParam Integer idClient) {
         HashMap<String, Object> map = new HashMap<>();
         if (userService.isSessionValid(sessionKey) != null) {
@@ -80,7 +80,7 @@ public class OrderController {
     }
 
     @PostMapping("/rejectBookingRequest")
-    public void rejectBookingRequest(@RequestHeader(value = "session") String sessionKey, @RequestParam Integer idOrder,
+    public void rejectBookingRequest(@RequestHeader(value = "session") String sessionKey, @RequestParam String idOrder,
                                      @RequestParam Integer idClient) {
         HashMap<String, Object> map = new HashMap<>();
         if (userService.isSessionValid(sessionKey) != null) {

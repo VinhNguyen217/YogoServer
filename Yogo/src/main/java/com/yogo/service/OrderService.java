@@ -20,7 +20,7 @@ public class OrderService {
 		return repo.findLastOder();
 	}
 	
-	public Oder findById(Integer id) {
+	public Oder findById(String id) {
 		return repo.findById(id).get();
 	}
 }

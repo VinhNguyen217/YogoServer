@@ -17,7 +17,7 @@ public class Bookmark extends BaseModel{
 
     private String name;
 
-    private Integer userId;
+    private String userId;
 
     private String default_location;
 }

@@ -9,7 +9,7 @@ import lombok.With;
 @AllArgsConstructor
 @NoArgsConstructor
 @With
-public class UserLoginResponse {
+public class UserLoginResult {
     private String sessionId;
     private UserDto info;
 }

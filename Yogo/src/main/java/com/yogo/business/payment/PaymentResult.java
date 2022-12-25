@@ -1,4 +1,4 @@
-package com.yogo.business.map;
+package com.yogo.business.payment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,10 @@ import lombok.With;
 @AllArgsConstructor
 @NoArgsConstructor
 @With
-public class PointDto {
-    private Coordinates location;
+public class PaymentResult {
+    private String id;
     private String name;
+    private Double price;
+    private Double totalPrice;
+    private String describe;
 }

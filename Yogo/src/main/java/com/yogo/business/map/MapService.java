@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
-import com.yogo.model.Coordinates;
 import okhttp3.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,13 +44,13 @@ public class MapService {
                 JSONObject point = resources.getJSONObject("point");
                 JSONArray coordinatesArray = point.getJSONArray("coordinates");
                 ArrayList c = gson.fromJson(coordinatesArray.toString(), ArrayList.class);
-                Coordinates coordinates = new Coordinates().withLat((Double) c.get(0)).withLon((Double) c.get(1));
+                Coordinates coordinates = new Coordinates().withLatitude((Double) c.get(0)).withLongitude((Double) c.get(1));
                 coordinatesList.add(coordinates);
             }
         }
         coordinatesList.forEach((v) -> {
             try {
-                PointDto pointDto = new PointDto().withLocation(v).withName(findPointName(v.getLat(), v.getLon(), servletRequest));
+                PointDto pointDto = new PointDto().withLocation(v).withName(findPointName(v.getLatitude(), v.getLongitude(), servletRequest));
                 res.add(pointDto);
             } catch (IOException e) {
                 throw new RuntimeException(e);

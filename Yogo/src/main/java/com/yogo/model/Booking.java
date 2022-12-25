@@ -15,13 +15,19 @@ import java.time.LocalDateTime;
 @Table(name = "booking")
 public class Booking extends BaseModel {
 
-    private Integer serviceId;
+    private String serviceId;
 
-    private Integer userId;
+    private String userId;
 
-    private Double startPoint;
+    private Double latStartPoint;
 
-    private Double endPoint;
+    private Double lonStartPoint;
+
+    private Double latEndPoint;
+
+    private Double lonEndPoint;
+
+    private Double totalPrice;
 
     @Enumerated(EnumType.STRING)
     private Status status;

@@ -1,5 +1,6 @@
 package com.yogo.business.booking;
 
+import com.yogo.business.map.Coordinates;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookingRequest {
-    private Double startPoint;
-    private Double endPoint;
-    private Integer serviceId;
+    private Coordinates pickUp;
+    private Coordinates dropOff;
+    private String serviceId;
+    private Double totalPrice;
 }
