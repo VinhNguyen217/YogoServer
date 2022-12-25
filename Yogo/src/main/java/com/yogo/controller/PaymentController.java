@@ -19,8 +19,4 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    @PostMapping("")
-    public ResponseEntity<?> onPayment(@RequestBody PaymentRequest request, HttpServletRequest servletRequest) {
-        return ResponseMessage.success(paymentService.onPayment(request, servletRequest));
-    }
 }
