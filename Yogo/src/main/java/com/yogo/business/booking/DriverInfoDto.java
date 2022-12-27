@@ -1,28 +1,22 @@
-package com.yogo.model;
+package com.yogo.business.booking;
 
 import com.yogo.enums.Role;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
-import javax.persistence.*;
-
-@EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-@Entity
-@Table(name = "user")
 @With
-public class User extends BaseModel {
-
+public class DriverInfoDto {
+    private String id;
     private String username;
     private String email;
     private String phone;
     private String address;
-    private String password;
-
-    @Enumerated(EnumType.STRING)
     private Role role;
-
     private Double rating;
     private Integer rideComplete;
     private String typeTransport;

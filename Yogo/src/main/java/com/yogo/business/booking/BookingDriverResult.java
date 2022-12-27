@@ -1,6 +1,5 @@
 package com.yogo.business.booking;
 
-import com.yogo.business.auth.UserDto;
 import com.yogo.model.Booking;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,5 +12,5 @@ import lombok.With;
 @With
 public class BookingDriverResult {
     private Booking booking;
-    private UserDto driver;
+    private DriverInfoDto driver;
 }

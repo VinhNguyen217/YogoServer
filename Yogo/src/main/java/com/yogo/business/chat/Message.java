@@ -5,16 +5,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 public class Message {
+    private String userName;
     private String content;
-    private String room;
-    private String username;
+
+    private String target;
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "userName='" + userName + '\'' +
+                ", message='" + content + '\'' +
+                '}';
+    }
 }

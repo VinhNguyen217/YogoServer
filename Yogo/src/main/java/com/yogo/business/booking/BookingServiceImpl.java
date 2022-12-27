@@ -47,7 +47,11 @@ public class BookingServiceImpl implements BookingService {
                 .withStatus(Status.CREATED);
         Booking booking = bookingRepository.save(bookingCreate);
         List<User> drivers = userRepository.findByRole(Role.ROLE_DRIVER);
-        UserDto driverInfo = objectMapper.convertValue(drivers.get(0), UserDto.class);
+        DriverInfoDto driverInfo = objectMapper.convertValue(drivers.get(0), DriverInfoDto.class);
+        driverInfo.setRating(4.5);
+        driverInfo.setRideComplete(100);
+        driverInfo.setTypeTransport("Yamaha");
+        driverInfo.setLicensePlate("18H2 9999");
         return new BookingDriverResult()
                 .withBooking(booking)
                 .withDriver(driverInfo);
