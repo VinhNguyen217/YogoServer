@@ -16,15 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
-import com.yogo.model.DriverManager;
 import com.yogo.model.Oder;
-import com.yogo.socket.SocketManager;
-import com.yogo.model.User;
 import com.yogo.service.OrderService;
 import com.yogo.business.auth.UserService;
-import com.yogo.socket.SocketHandler;
+import com.yogo.business.socket.SocketHandler;
 import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
@@ -59,43 +55,43 @@ public class OrderController {
     @PostMapping("/acceptBookingRequest")
     public void acceptBookingRequest(@RequestHeader(value = "session") String sessionKey, @RequestParam String idOrder,
                                      @RequestParam Integer idClient) {
-        HashMap<String, Object> map = new HashMap<>();
-        if (userService.isSessionValid(sessionKey) != null) {
-            User driver = userService.isSessionValid(sessionKey); // Lấy ra đối tượng lái xe
-
-            LocalDateTime acceptTime = LocalDateTime.now();
-            Oder order = orderService.findById(idOrder);
-            order.setAcceptTime(acceptTime);
-            order.setStatus("accept");
-            orderService.save(order);
-
-            UUID uuidDriver = SocketManager.getInstance().map.get(driver.getId());
-            SocketIOClient socketIOClient = server.getClient(uuidDriver);
-
-            socket.sendDriverInfo(socketIOClient, driver, idClient); // Gửi thông tin lái xe cho khách hàng
-
-            DriverManager.getInstance().driverWait.remove(driver);
-            DriverManager.getInstance().driverWork.add(driver);
-        }
+//        HashMap<String, Object> map = new HashMap<>();
+//        if (userService.isSessionValid(sessionKey) != null) {
+//            User driver = userService.isSessionValid(sessionKey); // Lấy ra đối tượng lái xe
+//
+//            LocalDateTime acceptTime = LocalDateTime.now();
+//            Oder order = orderService.findById(idOrder);
+//            order.setAcceptTime(acceptTime);
+//            order.setStatus("accept");
+//            orderService.save(order);
+//
+//            UUID uuidDriver = SocketManager.getInstance().map.get(driver.getId());
+//            SocketIOClient socketIOClient = server.getClient(uuidDriver);
+//
+//            socket.sendDriverInfo(socketIOClient, driver, idClient); // Gửi thông tin lái xe cho khách hàng
+//
+//            DriverManager.getInstance().driverWait.remove(driver);
+//            DriverManager.getInstance().driverWork.add(driver);
+//        }
     }
 
     @PostMapping("/rejectBookingRequest")
     public void rejectBookingRequest(@RequestHeader(value = "session") String sessionKey, @RequestParam String idOrder,
                                      @RequestParam Integer idClient) {
-        HashMap<String, Object> map = new HashMap<>();
-        if (userService.isSessionValid(sessionKey) != null) {
-            User driver = userService.isSessionValid(sessionKey); // Lấy ra đối tượng lái xe
-
-            LocalDateTime acceptTime = LocalDateTime.now();
-            Oder order = orderService.findById(idOrder);
-            order.setAcceptTime(acceptTime);
-            order.setStatus("cancel");
-            orderService.save(order);
-
-            UUID uuidDriver = SocketManager.getInstance().map.get(driver.getId());
-            SocketIOClient socketIOClient = server.getClient(uuidDriver);
-
-            socket.sendDriverInfo(socketIOClient, null, idClient); // Gửi thông tin là null cho khách hàng
-        }
+//        HashMap<String, Object> map = new HashMap<>();
+//        if (userService.isSessionValid(sessionKey) != null) {
+//            User driver = userService.isSessionValid(sessionKey); // Lấy ra đối tượng lái xe
+//
+//            LocalDateTime acceptTime = LocalDateTime.now();
+//            Oder order = orderService.findById(idOrder);
+//            order.setAcceptTime(acceptTime);
+//            order.setStatus("cancel");
+//            orderService.save(order);
+//
+//            UUID uuidDriver = SocketManager.getInstance().map.get(driver.getId());
+//            SocketIOClient socketIOClient = server.getClient(uuidDriver);
+//
+//            socket.sendDriverInfo(socketIOClient, null, idClient); // Gửi thông tin là null cho khách hàng
+//        }
     }
 }

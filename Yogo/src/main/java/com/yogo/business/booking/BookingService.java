@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface BookingService {
 
-    BookingDriverResult create(BookingRequest bookingRequest, HttpServletRequest servletRequest);
+    Booking create(BookingRequest bookingRequest, HttpServletRequest servletRequest);
 
     Booking findById(String id,HttpServletRequest servletRequest);
 }

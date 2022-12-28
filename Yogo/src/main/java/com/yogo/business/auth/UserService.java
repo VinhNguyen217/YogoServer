@@ -37,6 +37,10 @@ public class UserService {
     @Value("${name-session}")
     private String name_session;
 
+    public User findById(String id) {
+        return userRepository.findById(id).get();
+    }
+
     public List<UserDto> getCurrentUsers() {
         return sessionRegistry.getAllPrincipals()
                 .stream()
@@ -95,23 +99,5 @@ public class UserService {
     public User isSessionValid(String sessionId) {
         User user = SessionManager.getInstance().map.get(sessionId);
         return user;
-    }
-
-    /**
-     * Find driver for user
-     *
-     * @return
-     */
-    public User findDriver() {
-        ArrayList<User> drivers = DriverManager.getInstance().driverWait; // Lấy ra danh sách những driver đang chờ
-        if (drivers.size() == 1) {
-            return drivers.get(0);
-        } else if (drivers.size() > 1) {
-            Random r = new Random();
-            int n = r.nextInt(drivers.size());
-            return drivers.get(n);
-        } else {
-            return null;
-        }
     }
 }

@@ -27,14 +27,8 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Override
-    public BookingDriverResult create(BookingRequest bookingRequest, HttpServletRequest servletRequest) {
+    public Booking create(BookingRequest bookingRequest, HttpServletRequest servletRequest) {
         UserDto userDto = userService.checkSession(servletRequest);
         Booking bookingCreate = new Booking()
                 .withLatStartPoint(bookingRequest.getPickUp().getLatitude())
@@ -45,16 +39,7 @@ public class BookingServiceImpl implements BookingService {
                 .withUserId(userDto.getId())
                 .withTotalPrice(bookingRequest.getTotalPrice())
                 .withStatus(Status.CREATED);
-        Booking booking = bookingRepository.save(bookingCreate);
-        List<User> drivers = userRepository.findByRole(Role.ROLE_DRIVER);
-        DriverInfoDto driverInfo = objectMapper.convertValue(drivers.get(0), DriverInfoDto.class);
-        driverInfo.setRating(4.5);
-        driverInfo.setRideComplete(100);
-        driverInfo.setTypeTransport("Yamaha");
-        driverInfo.setLicensePlate("18H2 9999");
-        return new BookingDriverResult()
-                .withBooking(booking)
-                .withDriver(driverInfo);
+        return bookingRepository.save(bookingCreate);
     }
 
     @Override

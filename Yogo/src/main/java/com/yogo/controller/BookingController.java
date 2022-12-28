@@ -1,22 +1,15 @@
 package com.yogo.controller;
 
-import java.util.UUID;
-
 import com.yogo.business.booking.BookingRequest;
 import com.yogo.message.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.yogo.business.map.Coordinates;
-import com.yogo.model.DriverManager;
-import com.yogo.socket.SocketManager;
-import com.yogo.model.User;
 import com.yogo.business.booking.BookingService;
 import com.yogo.business.auth.UserService;
-import com.yogo.socket.SocketHandler;
+import com.yogo.business.socket.SocketHandler;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -92,31 +85,31 @@ public class BookingController {
 
     @PostMapping("/finish")
     public void finishJourney(@RequestHeader(value = "session") String sessionKey, @RequestParam Integer idClient) {
-        if (userService.isSessionValid(sessionKey) != null) {
-            User driver = userService.isSessionValid(sessionKey); // lấy ra driver dựa vào sessionId
-
-            UUID uuidDriver = SocketManager.getInstance().map.get(driver.getId());
-            SocketIOClient socketIOClient = socketIOServer.getClient(uuidDriver);
-
-            socket.finish(socketIOClient, idClient);
-
-            DriverManager.getInstance().driverWork.remove(driver); // Xóa driver khỏi danh sách đang làm việc
-            DriverManager.getInstance().driverWait.add(driver); // Thêm driver vào danh sách chờ
-        }
+//        if (userService.isSessionValid(sessionKey) != null) {
+//            User driver = userService.isSessionValid(sessionKey); // lấy ra driver dựa vào sessionId
+//
+//            UUID uuidDriver = null;
+//            SocketIOClient socketIOClient = socketIOServer.getClient(uuidDriver);
+//
+//            socket.finish(socketIOClient, idClient);
+//
+//            DriverManager.getInstance().driverWork.remove(driver); // Xóa driver khỏi danh sách đang làm việc
+//            DriverManager.getInstance().driverWait.add(driver); // Thêm driver vào danh sách chờ
+//        }
     }
 
     @PostMapping("/setTracking")
     public void setTracking(@RequestHeader(value = "session") String sessionKey, @RequestBody Coordinates location,
                             @RequestParam Integer idUser) {
-        if (userService.isSessionValid(sessionKey) != null) {
-
-            User user1 = userService.isSessionValid(sessionKey);
-
-            UUID uuidUser1 = SocketManager.getInstance().map.get(user1.getId());
-            SocketIOClient socketIOClient = socketIOServer.getClient(uuidUser1);
-
-            socket.sendTracking(socketIOClient, location, idUser);
-        }
+//        if (userService.isSessionValid(sessionKey) != null) {
+//
+//            User user1 = userService.isSessionValid(sessionKey);
+//
+//            UUID uuidUser1 = SocketManager.getInstance().map.get(user1.getId());
+//            SocketIOClient socketIOClient = socketIOServer.getClient(uuidUser1);
+//
+//            socket.sendTracking(socketIOClient, location, idUser);
+//        }
     }
 
 }
