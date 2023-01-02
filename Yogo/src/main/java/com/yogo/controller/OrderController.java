@@ -28,16 +28,13 @@ import org.springframework.web.client.HttpClientErrorException;
 public class OrderController {
 
     @Autowired
-    private SocketIOServer server;
-
-    @Autowired
     private OrderService orderService;
 
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private SocketHandler socket;
+//    @Autowired
+//    private SocketHandler socket;
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestHeader(value = "session") String sessionKey,

@@ -18,16 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 public class BookingController {
 
     @Autowired
-    private SocketIOServer socketIOServer;
-
-    @Autowired
     private BookingService bookingService;
 
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private SocketHandler socket;
+//    @Autowired
+//    private SocketHandler socket;
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody BookingRequest bookingRequest, HttpServletRequest servletRequest) {
