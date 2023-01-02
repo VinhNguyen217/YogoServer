@@ -9,4 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class Message extends MessageChild {
     private String target;
+
+    @Override
+    public String toString() {
+        return this.getUserName() + "-" + this.getContent() + "-" + this.getTarget();
+    }
 }

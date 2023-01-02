@@ -11,6 +11,7 @@ import com.yogo.business.chat.MessageChild;
 import com.yogo.enums.Role;
 import com.yogo.model.Booking;
 import com.yogo.utils.EventConstants;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.annotation.OnEvent;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 @Service
+@Log4j2
 public class SocketHandler {
 
     @Autowired
@@ -37,10 +39,13 @@ public class SocketHandler {
         socketIOServer.addEventListener(EventConstants.AUTH, String.class, new DataListener<String>() {
             @Override
             public void onData(SocketIOClient client, String userId, AckRequest ackSender) throws Exception {
-                User user = userService.findById(userId);
-                if (Role.ROLE_CLIENT.equals(user.getRole()))
-                    SocketClientManage.getInstance().map.put(userId, client.getSessionId());
-                else SocketDriverManage.getInstance().map.put(userId, client.getSessionId());
+                socketIOServer.getBroadcastOperations().sendEvent(EventConstants.AUTH, userId);
+                log.info("username : " + userId);
+//                User user = userService.findById(userId);
+//                log.info("username : " + user.getUsername());
+//                if (Role.ROLE_CLIENT.equals(user.getRole()))
+//                    SocketClientManage.getInstance().map.put(userId, client.getSessionId());
+//                else SocketDriverManage.getInstance().map.put(userId, client.getSessionId());
             }
         });
 
@@ -50,11 +55,13 @@ public class SocketHandler {
         socketIOServer.addEventListener(EventConstants.CHAT, Message.class, new DataListener<Message>() {
             @Override
             public void onData(SocketIOClient socketIOClient, Message data, AckRequest ackRequest) throws Exception {
-                UUID uuid = UUID.fromString(data.getTarget());
-                MessageChild dataSent = new MessageChild()
-                        .withUserName(data.getUserName())
-                        .withContent(data.getContent());
-                socketIOServer.getClient(uuid).sendEvent(EventConstants.CHAT_PRIVATE, dataSent);
+                log.info(socketIOClient.getSessionId() + " : " + data.toString());
+                socketIOServer.getBroadcastOperations().sendEvent(EventConstants.CHAT, data.getContent());
+//                UUID uuid = UUID.fromString(data.getTarget());
+//                MessageChild dataSent = new MessageChild()
+//                        .withUserName(data.getUserName())
+//                        .withContent(data.getContent());
+//                socketIOServer.getClient(uuid).sendEvent(EventConstants.CHAT_PRIVATE, dataSent);
             }
         });
     }
