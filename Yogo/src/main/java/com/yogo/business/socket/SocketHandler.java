@@ -21,7 +21,7 @@ import com.yogo.model.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-//@Service
+@Service
 @Log4j2
 public class SocketHandler {
 
