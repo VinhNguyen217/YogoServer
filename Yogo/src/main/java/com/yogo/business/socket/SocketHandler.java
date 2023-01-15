@@ -40,12 +40,10 @@ public class SocketHandler {
             @Override
             public void onData(SocketIOClient client, String userId, AckRequest ackSender) throws Exception {
                 socketIOServer.getBroadcastOperations().sendEvent(EventConstants.AUTH, userId);
-                log.info("username : " + userId);
-//                User user = userService.findById(userId);
-//                log.info("username : " + user.getUsername());
-//                if (Role.ROLE_CLIENT.equals(user.getRole()))
-//                    SocketClientManage.getInstance().map.put(userId, client.getSessionId());
-//                else SocketDriverManage.getInstance().map.put(userId, client.getSessionId());
+                User user = userService.findById(userId);
+                if (Role.ROLE_CLIENT.equals(user.getRole()))
+                    SocketClientManage.getInstance().map.put(userId, client.getSessionId());
+                else SocketDriverManage.getInstance().map.put(userId, client.getSessionId());
             }
         });
 

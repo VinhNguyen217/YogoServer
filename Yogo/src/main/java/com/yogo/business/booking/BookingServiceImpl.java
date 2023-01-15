@@ -3,6 +3,8 @@ package com.yogo.business.booking;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yogo.business.auth.UserDto;
 import com.yogo.business.auth.UserService;
+import com.yogo.business.socket.SocketDriverManage;
+import com.yogo.business.socket.SocketHandler;
 import com.yogo.enums.Role;
 import com.yogo.enums.Status;
 import com.yogo.message.MessageText;
@@ -16,8 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -26,6 +30,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SocketHandler socketHandler;
 
     @Override
     public Booking create(BookingRequest bookingRequest, HttpServletRequest servletRequest) {
@@ -39,7 +46,14 @@ public class BookingServiceImpl implements BookingService {
                 .withUserId(userDto.getId())
                 .withTotalPrice(bookingRequest.getTotalPrice())
                 .withStatus(Status.CREATED);
-        return bookingRepository.save(bookingCreate);
+        Booking booking = bookingRepository.save(bookingCreate);
+        if (!SocketDriverManage.getInstance().map.isEmpty()) {
+            HashMap<String, UUID> drivers = SocketDriverManage.getInstance().map;
+            for (UUID uuid : drivers.values()) {
+                socketHandler.sendBooking(booking, uuid);
+            }
+        }
+        return booking;
     }
 
     @Override
