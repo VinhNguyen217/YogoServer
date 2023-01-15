@@ -1,6 +1,8 @@
 package com.yogo.model;
 
+import com.yogo.business.booking.BookingInfoDto;
 import com.yogo.enums.Status;
+import com.yogo.utils.TimeUtils;
 import lombok.*;
 
 import javax.persistence.*;
@@ -34,18 +36,15 @@ public class Booking extends BaseModel {
 
     private LocalDateTime finishAt;
 
-    @Override
-    public String toString() {
-        return "Booking{" +
-                "serviceId='" + serviceId + '\'' +
-                ", userId='" + userId + '\'' +
-                ", latStartPoint=" + latStartPoint +
-                ", lonStartPoint=" + lonStartPoint +
-                ", latEndPoint=" + latEndPoint +
-                ", lonEndPoint=" + lonEndPoint +
-                ", totalPrice=" + totalPrice +
-                ", status=" + status +
-                ", finishAt=" + finishAt +
-                '}';
+    public BookingInfoDto convert() {
+        return new BookingInfoDto().withId(this.getId())
+                .withLatStartPoint(this.latStartPoint)
+                .withLonStartPoint(this.lonStartPoint)
+                .withLatEndPoint(this.latEndPoint)
+                .withLonEndPoint(this.lonEndPoint)
+                .withTotalPrice(this.totalPrice)
+                .withStatus(this.status.name())
+                .withCreatedAt(TimeUtils.convertToStr(this.getCreatedAt()));
     }
+
 }

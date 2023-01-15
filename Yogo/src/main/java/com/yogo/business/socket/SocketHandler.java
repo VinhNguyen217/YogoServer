@@ -6,6 +6,7 @@ import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.yogo.business.auth.UserService;
+import com.yogo.business.booking.BookingInfoDto;
 import com.yogo.business.chat.Message;
 import com.yogo.business.chat.MessageChild;
 import com.yogo.enums.Role;
@@ -68,7 +69,7 @@ public class SocketHandler {
      * Gửi thông tin khách hàng và thông tin đặt xe cho lái xe
      */
     @OnEvent(value = EventConstants.SEND_BOOKING)
-    public void sendBooking(Booking booking, UUID uuidDriver) {
+    public void sendBooking(BookingInfoDto booking, UUID uuidDriver) {
         socketIOServer.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
         log.info("booking : " + booking.toString());
     }

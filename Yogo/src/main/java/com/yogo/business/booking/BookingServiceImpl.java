@@ -47,10 +47,11 @@ public class BookingServiceImpl implements BookingService {
                 .withTotalPrice(bookingRequest.getTotalPrice())
                 .withStatus(Status.CREATED);
         Booking booking = bookingRepository.save(bookingCreate);
+        BookingInfoDto bookingInfo = booking.convert();
         if (!SocketDriverManage.getInstance().map.isEmpty()) {
             HashMap<String, UUID> drivers = SocketDriverManage.getInstance().map;
             for (UUID uuid : drivers.values()) {
-                socketHandler.sendBooking(booking, uuid);
+                socketHandler.sendBooking(bookingInfo, uuid);
             }
         }
         return booking;
