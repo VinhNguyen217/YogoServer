@@ -33,4 +33,19 @@ public class Booking extends BaseModel {
     private Status status;
 
     private LocalDateTime finishAt;
+
+    @Override
+    public String toString() {
+        return "Booking{" +
+                "serviceId='" + serviceId + '\'' +
+                ", userId='" + userId + '\'' +
+                ", latStartPoint=" + latStartPoint +
+                ", lonStartPoint=" + lonStartPoint +
+                ", latEndPoint=" + latEndPoint +
+                ", lonEndPoint=" + lonEndPoint +
+                ", totalPrice=" + totalPrice +
+                ", status=" + status +
+                ", finishAt=" + finishAt +
+                '}';
+    }
 }

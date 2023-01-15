@@ -70,6 +70,7 @@ public class SocketHandler {
     @OnEvent(value = EventConstants.SEND_BOOKING)
     public void sendBooking(Booking booking, UUID uuidDriver) {
         socketIOServer.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
+        log.info("booking : " + booking.toString());
     }
 
     /**
