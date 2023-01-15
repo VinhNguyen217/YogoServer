@@ -31,6 +31,8 @@ public class Booking extends BaseModel {
 
     private Double totalPrice;
 
+    private String notes;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -44,6 +46,7 @@ public class Booking extends BaseModel {
                 .withLonEndPoint(this.lonEndPoint)
                 .withTotalPrice(this.totalPrice)
                 .withStatus(this.status.name())
+                .withNotes(this.notes)
                 .withCreatedAt(TimeUtils.convertToStr(this.getCreatedAt()));
     }
 

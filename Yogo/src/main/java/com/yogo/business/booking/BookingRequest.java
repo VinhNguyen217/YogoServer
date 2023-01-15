@@ -13,4 +13,5 @@ public class BookingRequest {
     private Coordinates dropOff;
     private String serviceId;
     private Double totalPrice;
+    private String notes;
 }

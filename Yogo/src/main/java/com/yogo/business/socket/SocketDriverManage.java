@@ -1,15 +1,15 @@
 package com.yogo.business.socket;
 
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SocketDriverManage {
-    public HashMap<String, UUID> map;
+    public List<UserSocket> list;
 
     private static SocketDriverManage instance = null;
 
     private SocketDriverManage() {
-        map = new HashMap<>();
+        list = new ArrayList<>();
     }
 
     public static SocketDriverManage getInstance() {

@@ -1,16 +1,16 @@
 package com.yogo.business.socket;
 
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SocketClientManage {
 
-    public HashMap<String, UUID> map;
+    public List<UserSocket> list;
 
     private static SocketClientManage instance = null;
 
     private SocketClientManage() {
-        map = new HashMap<>();
+        list = new ArrayList<>();
     }
 
     public static SocketClientManage getInstance() {

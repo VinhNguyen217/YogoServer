@@ -10,6 +10,7 @@ import com.yogo.business.booking.BookingInfoDto;
 import com.yogo.business.chat.Message;
 import com.yogo.business.chat.MessageChild;
 import com.yogo.enums.Role;
+import com.yogo.enums.Status;
 import com.yogo.model.Booking;
 import com.yogo.utils.EventConstants;
 import lombok.extern.log4j.Log4j2;
@@ -43,8 +44,16 @@ public class SocketHandler {
                 socketIOServer.getBroadcastOperations().sendEvent(EventConstants.AUTH, userId);
                 User user = userService.findById(userId);
                 if (Role.ROLE_CLIENT.equals(user.getRole()))
-                    SocketClientManage.getInstance().map.put(userId, client.getSessionId());
-                else SocketDriverManage.getInstance().map.put(userId, client.getSessionId());
+                    SocketClientManage.getInstance().list.add(new UserSocket()
+                            .withUserId(userId)
+                            .withSocketId(client.getSessionId()));
+                else
+                    SocketDriverManage.getInstance().list.add(new UserSocket()
+                            .withUserId(userId)
+                            .withSocketId(client.getSessionId())
+                            .withStatus(Status.READY));
+                log.info("list of clients : " + SocketClientManage.getInstance().list.size());
+                log.info("list of drivers : " + SocketDriverManage.getInstance().list.size());
             }
         });
 
@@ -70,9 +79,7 @@ public class SocketHandler {
      */
     @OnEvent(value = EventConstants.SEND_BOOKING)
     public void sendBooking(BookingInfoDto booking, UUID uuidDriver) {
-        log.info("driver : " + uuidDriver.toString());
         socketIOServer.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
-        log.info("booking : " + booking.toString());
     }
 
     /**

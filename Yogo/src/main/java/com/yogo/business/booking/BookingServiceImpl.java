@@ -5,6 +5,7 @@ import com.yogo.business.auth.UserDto;
 import com.yogo.business.auth.UserService;
 import com.yogo.business.socket.SocketDriverManage;
 import com.yogo.business.socket.SocketHandler;
+import com.yogo.business.socket.UserSocket;
 import com.yogo.enums.Role;
 import com.yogo.enums.Status;
 import com.yogo.message.MessageText;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -45,13 +47,17 @@ public class BookingServiceImpl implements BookingService {
                 .withServiceId(bookingRequest.getServiceId())
                 .withUserId(userDto.getId())
                 .withTotalPrice(bookingRequest.getTotalPrice())
+                .withNotes(bookingRequest.getNotes())
                 .withStatus(Status.CREATED);
         Booking booking = bookingRepository.save(bookingCreate);
         BookingInfoDto bookingInfo = booking.convert();
-        if (!SocketDriverManage.getInstance().map.isEmpty()) {
-            HashMap<String, UUID> drivers = SocketDriverManage.getInstance().map;
-            for (UUID uuid : drivers.values()) {
-                socketHandler.sendBooking(bookingInfo, uuid);
+        if (!SocketDriverManage.getInstance().list.isEmpty()) {
+            List<UserSocket> driversReady = SocketDriverManage.getInstance().list
+                    .stream()
+                    .filter(u -> u.getStatus().equals(Status.READY))
+                    .collect(Collectors.toList());
+            if (!driversReady.isEmpty()) {
+                socketHandler.sendBooking(bookingInfo, driversReady.get(0).getSocketId());
             }
         }
         return booking;

@@ -1,6 +1,5 @@
 package com.yogo.business.booking;
 
-import com.yogo.model.Booking;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,19 +24,7 @@ public class BookingInfoDto {
 
     private String status;
 
-    private String createdAt;
+    private String notes;
 
-    @Override
-    public String toString() {
-        return "BookingInfoDto{" +
-                "id='" + id + '\'' +
-                ", latStartPoint=" + latStartPoint +
-                ", lonStartPoint=" + lonStartPoint +
-                ", latEndPoint=" + latEndPoint +
-                ", lonEndPoint=" + lonEndPoint +
-                ", totalPrice=" + totalPrice +
-                ", status='" + status + '\'' +
-                ", createdAt='" + createdAt + '\'' +
-                '}';
-    }
+    private String createdAt;
 }

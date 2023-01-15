@@ -20,12 +20,6 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
-    @Autowired
-    private UserService userService;
-
-//    @Autowired
-//    private SocketHandler socket;
-
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody BookingRequest bookingRequest, HttpServletRequest servletRequest) {
         return ResponseMessage.success(bookingService.create(bookingRequest, servletRequest));
