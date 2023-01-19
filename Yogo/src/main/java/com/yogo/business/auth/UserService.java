@@ -38,7 +38,7 @@ public class UserService {
     private String name_session;
 
     public User findById(String id) {
-        return userRepository.findById(id).get();
+        return userRepository.findById(id).orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, MessageText.NOT_FOUND));
     }
 
     public List<UserDto> getCurrentUsers() {

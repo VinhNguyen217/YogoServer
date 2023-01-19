@@ -1,6 +1,8 @@
 package com.yogo.business.socket;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -43,15 +45,19 @@ public class SocketHandler {
             public void onData(SocketIOClient client, String userId, AckRequest ackSender) throws Exception {
                 socketIOServer.getBroadcastOperations().sendEvent(EventConstants.AUTH, userId);
                 User user = userService.findById(userId);
-                if (Role.ROLE_CLIENT.equals(user.getRole()))
-                    SocketClientManage.getInstance().list.add(new UserSocket()
-                            .withUserId(userId)
-                            .withSocketId(client.getSessionId()));
-                else
-                    SocketDriverManage.getInstance().list.add(new UserSocket()
-                            .withUserId(userId)
-                            .withSocketId(client.getSessionId())
-                            .withStatus(Status.READY));
+
+                if (Role.ROLE_CLIENT.equals(user.getRole())) {
+                    if (!checkClientExist(userId))
+                        SocketClientManage.getInstance().list.add(new UserSocket()
+                                .withUserId(userId)
+                                .withSocketId(client.getSessionId()));
+                } else {
+                    if (!checkDriverExist(userId))
+                        SocketDriverManage.getInstance().list.add(new UserSocket()
+                                .withUserId(userId)
+                                .withSocketId(client.getSessionId())
+                                .withStatus(Status.READY));
+                }
                 log.info("list of clients : " + SocketClientManage.getInstance().list.size());
                 log.info("list of drivers : " + SocketDriverManage.getInstance().list.size());
             }
@@ -98,6 +104,16 @@ public class SocketHandler {
     @OnEvent(value = EventConstants.SEND_DRIVER)
     public void sendDriverInfo(User driverInfo, UUID uuidClient) {
         socketIOServer.getClient(uuidClient).sendEvent(EventConstants.SEND_DRIVER, driverInfo);
+    }
+
+    private Boolean checkDriverExist(String userId) {
+        List<String> driverIds = SocketDriverManage.getInstance().list.stream().map(UserSocket::getUserId).collect(Collectors.toList());
+        return driverIds.contains(userId);
+    }
+
+    private Boolean checkClientExist(String userId) {
+        List<String> clientIds = SocketClientManage.getInstance().list.stream().map(UserSocket::getUserId).collect(Collectors.toList());
+        return clientIds.contains(userId);
     }
 
 }
