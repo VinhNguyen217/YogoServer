@@ -92,7 +92,7 @@ public class SocketHandler {
         try {
             socketIOServer.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            throw ex;
         }
     }
 
