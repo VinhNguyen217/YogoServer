@@ -12,4 +12,5 @@ import lombok.With;
 public class Coordinates {
     private Double latitude;    // Vĩ độ
     private Double longitude;    // Kinh độ
+    private String fullAddress;
 }

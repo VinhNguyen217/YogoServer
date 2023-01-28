@@ -12,13 +12,19 @@ import lombok.With;
 public class BookingInfoDto {
     private String id;
 
+    private String userName;
+
     private Double latStartPoint;
 
     private Double lonStartPoint;
 
+    private String nameStartPoint;
+
     private Double latEndPoint;
 
     private Double lonEndPoint;
+
+    private String nameEndPoint;
 
     private Double totalPrice;
 

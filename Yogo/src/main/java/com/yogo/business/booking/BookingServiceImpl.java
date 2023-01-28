@@ -50,7 +50,12 @@ public class BookingServiceImpl implements BookingService {
                 .withNotes(bookingRequest.getNotes())
                 .withStatus(Status.CREATED);
         Booking booking = bookingRepository.save(bookingCreate);
+
         BookingInfoDto bookingInfo = booking.convert();
+        bookingInfo.setNameStartPoint(bookingRequest.getPickUp().getFullAddress());
+        bookingInfo.setNameEndPoint(bookingRequest.getDropOff().getFullAddress());
+        bookingInfo.setUserName(userDto.getUsername());
+
         if (!SocketDriverManage.getInstance().list.isEmpty()) {
             List<UserSocket> driversReady = SocketDriverManage.getInstance().list
                     .stream()
