@@ -42,28 +42,28 @@ public class SocketHandler {
         /**
          * Sự kiện clien gửi userId về server
          */
-        SocketServer.socket.addEventListener(EventConstants.AUTH, String.class, new DataListener<String>() {
-            @Override
-            public void onData(SocketIOClient client, String userId, AckRequest ackSender) throws Exception {
-                log.info("userID : " + userId);
-                User user = userService.findById(userId);
-
-                if (Role.ROLE_CLIENT.equals(user.getRole())) {
-                    if (!checkClientExist(userId))
-                        SocketClientManage.getInstance().list.add(new UserSocket()
-                                .withUserId(userId)
-                                .withSocketId(client.getSessionId()));
-                } else {
-                    if (!checkDriverExist(userId))
-                        SocketDriverManage.getInstance().list.add(new UserSocket()
-                                .withUserId(userId)
-                                .withSocketId(client.getSessionId())
-                                .withStatus(Status.READY));
-                }
-                log.info("list of clients : " + SocketClientManage.getInstance().list.size());
-                log.info("list of drivers : " + SocketDriverManage.getInstance().list.size());
-            }
-        });
+//        SocketServer.socket.addEventListener(EventConstants.AUTH, String.class, new DataListener<String>() {
+//            @Override
+//            public void onData(SocketIOClient client, String userId, AckRequest ackSender) throws Exception {
+//                log.info("userID : " + userId);
+//                User user = userService.findById(userId);
+//
+//                if (Role.ROLE_CLIENT.equals(user.getRole())) {
+//                    if (!checkClientExist(userId))
+//                        SocketClientManage.getInstance().list.add(new UserSocket()
+//                                .withUserId(userId)
+//                                .withSocketId(client.getSessionId()));
+//                } else {
+//                    if (!checkDriverExist(userId))
+//                        SocketDriverManage.getInstance().list.add(new UserSocket()
+//                                .withUserId(userId)
+//                                .withSocketId(client.getSessionId())
+//                                .withStatus(Status.READY));
+//                }
+//                log.info("list of clients : " + SocketClientManage.getInstance().list.size());
+//                log.info("list of drivers : " + SocketDriverManage.getInstance().list.size());
+//            }
+//        });
 
         /**
          * Sự kiện chat giữa 2 user
