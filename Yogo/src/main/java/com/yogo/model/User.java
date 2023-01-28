@@ -4,6 +4,7 @@ import com.yogo.enums.Role;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "user")
 @With
-public class User extends BaseModel {
+public class User extends BaseModel implements Serializable {
 
     private String username;
     private String email;
