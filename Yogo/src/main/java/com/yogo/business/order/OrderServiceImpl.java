@@ -33,29 +33,6 @@ public class OrderServiceImpl implements OrderService {
     private SocketHandler socketHandler;
 
     @Override
-    public BookingInfoDto acceptBooking(String bookingId, HttpServletRequest servletRequest) {
-        UserDto userDto = userService.checkSession(servletRequest);
-        Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
-        if (bookingOptional.isPresent()) {
-            Booking booking = bookingOptional.get();
-            booking.setStatus(Status.ACCEPT);
-            bookingRepository.save(booking);
-            List<UserSocket> drivers = SocketDriverManage.getInstance().list;
-            List<UserSocket> clients = SocketClientManage.getInstance().list;
-            drivers.forEach(d -> {
-                if (d.getUserId().equals(userDto.getId()))
-                    d.setStatus(Status.BUSY);
-            });
-            clients.forEach(c -> {
-                if (c.getUserId().equals(booking.getUserId()))
-                    socketHandler.sendDriverInfo(null, c.getSocketId());
-            });
-            return booking.convert();
-        }
-        throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, MessageText.NOT_FOUND);
-    }
-
-    @Override
     public BookingInfoDto rejectBooking(String bookingId, HttpServletRequest servletRequest) {
         UserDto userDto = userService.checkSession(servletRequest);
         Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);

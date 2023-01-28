@@ -31,35 +31,8 @@ public class BookingController {
     }
 
     @PostMapping("/acceptBooking")
-    public ResponseEntity<?> acceptBooking(@RequestBody Integer bookingId, HttpServletRequest servletRequest) {
-
-//        HashMap<String, Object> map = new HashMap<>();
-//        if (userService.isSessionValid(sessionKey) != null) {
-//            User driverSelected = userService.findDriver(); // Tìm ra lái xe
-//
-//            if (driverSelected != null) {
-//
-//                Booking booking = bookingService.findById(idBooking); // lấy ra đối tượng Booking
-//                bookingService.create(booking);
-//
-//                User client = userService.isSessionValid(sessionKey); // Lấy ra đối tượng Client
-//                BookingInfo bookingInfo = new BookingInfo(client, booking); // Tạo đối tượng BookingInfo
-//
-//                // Tìm socket của client
-//                UUID uuidClient = SocketManager.getInstance().map.get(client.getId());
-//                SocketIOClient socketIOClient = socketIOServer.getClient(uuidClient);
-//
-//                socket.sendBooking(socketIOClient, bookingInfo, driverSelected);
-//                map.put("result", "Đã tìm thấy lái xe.");
-//                return ResponseMessage.success(map);
-//            } else {
-//                map.put("result", "Không tìm thấy lái xe.");
-//                return ResponseMessage.success(map);
-//            }
-//        } else {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
-//        }
-        return ResponseMessage.success(null);
+    public ResponseEntity<?> acceptBooking(@RequestBody String bookingId, HttpServletRequest servletRequest) {
+        return ResponseMessage.success(bookingService.acceptBooking(bookingId, servletRequest));
     }
 
     @PostMapping("/cancelBooking")

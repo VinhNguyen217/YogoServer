@@ -18,11 +18,6 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/acceptBooking")
-    public ResponseEntity<?> acceptBookingRequest(@RequestParam String bookingId, HttpServletRequest servletRequest) {
-        return ResponseMessage.success(orderService.acceptBooking(bookingId, servletRequest));
-    }
-
     @PostMapping("/rejectBooking")
     public ResponseEntity<?> rejectBookingRequest(@RequestParam String bookingId, HttpServletRequest servletRequest) {
         return ResponseMessage.success(orderService.rejectBooking(bookingId, servletRequest));

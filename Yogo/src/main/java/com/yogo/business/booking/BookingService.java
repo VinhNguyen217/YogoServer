@@ -9,4 +9,6 @@ public interface BookingService {
     Booking create(BookingRequest bookingRequest, HttpServletRequest servletRequest);
 
     Booking findById(String id,HttpServletRequest servletRequest);
+
+    Booking acceptBooking(String bookingId, HttpServletRequest servletRequest);
 }

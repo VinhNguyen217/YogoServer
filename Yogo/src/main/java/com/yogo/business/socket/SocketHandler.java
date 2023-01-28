@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
+import com.yogo.business.auth.UserDto;
 import com.yogo.business.auth.UserService;
 import com.yogo.business.booking.BookingInfoDto;
 import com.yogo.business.chat.Message;
@@ -104,7 +105,7 @@ public class SocketHandler {
      * @param
      */
     @OnEvent(value = EventConstants.SEND_DRIVER)
-    public void sendDriverInfo(User driverInfo, UUID uuidClient) {
+    public void sendDriverInfo(UserDto driverInfo, UUID uuidClient) {
         socketIOServer.getClient(uuidClient).sendEvent(EventConstants.SEND_DRIVER, driverInfo);
     }
 

@@ -3,6 +3,7 @@ package com.yogo.business.booking;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yogo.business.auth.UserDto;
 import com.yogo.business.auth.UserService;
+import com.yogo.business.socket.SocketClientManage;
 import com.yogo.business.socket.SocketDriverManage;
 import com.yogo.business.socket.SocketHandler;
 import com.yogo.business.socket.UserSocket;
@@ -73,6 +74,29 @@ public class BookingServiceImpl implements BookingService {
         UserDto userDto = userService.checkSession(servletRequest);
         Optional<Booking> bookingOptional = bookingRepository.findByIdAndUserId(id, userDto.getId());
         if (bookingOptional.isPresent()) return bookingOptional.get();
+        throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, MessageText.NOT_FOUND);
+    }
+
+    @Override
+    public Booking acceptBooking(String bookingId, HttpServletRequest servletRequest) {
+        UserDto userDto = userService.checkSession(servletRequest);
+        Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+        if (bookingOptional.isPresent()) {
+            Booking booking = bookingOptional.get();
+            booking.setStatus(Status.ACCEPT);
+            bookingRepository.save(booking);
+            List<UserSocket> drivers = SocketDriverManage.getInstance().list;
+            List<UserSocket> clients = SocketClientManage.getInstance().list;
+            drivers.forEach(d -> {
+                if (d.getUserId().equals(userDto.getId()))
+                    d.setStatus(Status.BUSY);
+            });
+            clients.forEach(c -> {
+                if (c.getUserId().equals(booking.getUserId()))
+                    socketHandler.sendDriverInfo(userDto, c.getSocketId());
+            });
+            return booking;
+        }
         throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, MessageText.NOT_FOUND);
     }
 }
