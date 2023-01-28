@@ -45,6 +45,7 @@ public class SocketHandler {
         SocketServer.socket.addEventListener(EventConstants.AUTH, String.class, new DataListener<String>() {
             @Override
             public void onData(SocketIOClient client, String userId, AckRequest ackSender) throws Exception {
+                log.info("userID : " + userId);
                 User user = userService.findById(userId);
 
                 if (Role.ROLE_CLIENT.equals(user.getRole())) {
