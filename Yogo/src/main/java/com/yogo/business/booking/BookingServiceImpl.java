@@ -14,6 +14,7 @@ import com.yogo.model.Booking;
 import com.yogo.model.User;
 import com.yogo.repository.BookingRepository;
 import com.yogo.repository.UserRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Log4j2
 public class BookingServiceImpl implements BookingService {
     @Autowired
     private BookingRepository bookingRepository;
@@ -81,6 +83,7 @@ public class BookingServiceImpl implements BookingService {
     public Booking acceptBooking(String bookingId, HttpServletRequest servletRequest) {
         UserDto userDto = userService.checkSession(servletRequest);
         Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+        log.info("booking : " + bookingOptional);
         if (bookingOptional.isPresent()) {
             Booking booking = bookingOptional.get();
             booking.setStatus(Status.ACCEPT);

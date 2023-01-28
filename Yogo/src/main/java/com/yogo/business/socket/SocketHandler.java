@@ -101,7 +101,11 @@ public class SocketHandler {
      */
     @OnEvent(value = EventConstants.TRACK)
     public void sendTracking(Coordinates coordinates, UUID uuid) {
-        socketIOServer.getClient(uuid).sendEvent(EventConstants.TRACK, coordinates);
+        try {
+            socketIOServer.getClient(uuid).sendEvent(EventConstants.TRACK, coordinates);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     /**
@@ -111,7 +115,11 @@ public class SocketHandler {
      */
     @OnEvent(value = EventConstants.SEND_DRIVER)
     public void sendDriverInfo(UserDto driverInfo, UUID uuidClient) {
-        socketIOServer.getClient(uuidClient).sendEvent(EventConstants.SEND_DRIVER, driverInfo);
+        try {
+            socketIOServer.getClient(uuidClient).sendEvent(EventConstants.SEND_DRIVER, driverInfo);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     private Boolean checkDriverExist(String userId) {
