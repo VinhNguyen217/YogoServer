@@ -89,7 +89,7 @@ public class SocketHandler {
         log.info("booking : " + booking.toString());
         log.info("driver : " + uuidDriver.toString());
         log.info("socket : " + socketIOServer);
-//        socketIOServer.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
+        socketIOServer.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
     }
 
     /**
