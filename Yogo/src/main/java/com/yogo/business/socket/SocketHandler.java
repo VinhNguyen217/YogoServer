@@ -12,6 +12,7 @@ import com.yogo.business.auth.UserService;
 import com.yogo.business.booking.BookingInfoDto;
 import com.yogo.business.chat.Message;
 import com.yogo.business.chat.MessageChild;
+import com.yogo.config.SocketServer;
 import com.yogo.enums.Role;
 import com.yogo.enums.Status;
 import com.yogo.model.Booking;
@@ -30,8 +31,8 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class SocketHandler {
 
-    @Autowired
-    private SocketIOServer socketIOServer;
+//    @Autowired
+//    private SocketIOServer socketIOServer;
 
     @Autowired
     private UserService userService;
@@ -41,10 +42,9 @@ public class SocketHandler {
         /**
          * Sự kiện clien gửi userId về server
          */
-        socketIOServer.addEventListener(EventConstants.AUTH, String.class, new DataListener<String>() {
+        SocketServer.socket.addEventListener(EventConstants.AUTH, String.class, new DataListener<String>() {
             @Override
             public void onData(SocketIOClient client, String userId, AckRequest ackSender) throws Exception {
-                socketIOServer.getBroadcastOperations().sendEvent(EventConstants.AUTH, userId);
                 User user = userService.findById(userId);
 
                 if (Role.ROLE_CLIENT.equals(user.getRole())) {
@@ -67,11 +67,11 @@ public class SocketHandler {
         /**
          * Sự kiện chat giữa 2 user
          */
-        socketIOServer.addEventListener(EventConstants.CHAT, Message.class, new DataListener<Message>() {
+        SocketServer.socket.addEventListener(EventConstants.CHAT, Message.class, new DataListener<Message>() {
             @Override
             public void onData(SocketIOClient socketIOClient, Message data, AckRequest ackRequest) throws Exception {
                 log.info(socketIOClient.getSessionId() + " : " + data.toString());
-                socketIOServer.getBroadcastOperations().sendEvent(EventConstants.CHAT, data.getContent());
+//                socketIOServer.getBroadcastOperations().sendEvent(EventConstants.CHAT, data.getContent());
 //                UUID uuid = UUID.fromString(data.getTarget());
 //                MessageChild dataSent = new MessageChild()
 //                        .withUserName(data.getUserName())
@@ -88,9 +88,9 @@ public class SocketHandler {
     public void sendBooking(BookingInfoDto booking, UUID uuidDriver) {
         log.info("booking : " + booking.toString());
         log.info("driver : " + uuidDriver.toString());
-        log.info("socket : " + socketIOServer);
         try {
-            socketIOServer.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
+//            socketIOServer.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
+            SocketServer.socket.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
         } catch (Exception ex) {
             throw ex;
         }
@@ -102,7 +102,8 @@ public class SocketHandler {
     @OnEvent(value = EventConstants.TRACK)
     public void sendTracking(Coordinates coordinates, UUID uuid) {
         try {
-            socketIOServer.getClient(uuid).sendEvent(EventConstants.TRACK, coordinates);
+//            socketIOServer.getClient(uuid).sendEvent(EventConstants.TRACK, coordinates);
+            SocketServer.socket.getClient(uuid).sendEvent(EventConstants.TRACK, coordinates);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -116,7 +117,8 @@ public class SocketHandler {
     @OnEvent(value = EventConstants.SEND_DRIVER)
     public void sendDriverInfo(UserDto driverInfo, UUID uuidClient) {
         try {
-            socketIOServer.getClient(uuidClient).sendEvent(EventConstants.SEND_DRIVER, driverInfo);
+//            socketIOServer.getClient(uuidClient).sendEvent(EventConstants.SEND_DRIVER, driverInfo);
+            SocketServer.socket.getClient(uuidClient).sendEvent(EventConstants.SEND_DRIVER, driverInfo);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
