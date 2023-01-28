@@ -44,13 +44,13 @@ public class SocketServer {
         socketIOServer.addEventListener(EventConstants.AUTH, String.class, new DataListener<String>() {
             @Override
             public void onData(SocketIOClient client, String userId, AckRequest ackSender) throws Exception {
-                log.info("userID : " + userId);
-                SocketClientManage.getInstance().list.add(new UserSocket()
-                        .withUserId(userId)
-                        .withSocketId(client.getSessionId()));
-                SocketDriverManage.getInstance().list.add(new UserSocket()
-                        .withUserId(userId)
-                        .withSocketId(client.getSessionId()));
+                log.info(userId);
+//                SocketClientManage.getInstance().list.add(new UserSocket()
+//                        .withUserId(userId)
+//                        .withSocketId(client.getSessionId()));
+//                SocketDriverManage.getInstance().list.add(new UserSocket()
+//                        .withUserId(userId)
+//                        .withSocketId(client.getSessionId()));
 
 //                if (Role.ROLE_CLIENT.equals(user.getRole())) {
 //                    if (!checkClientExist(userId))
