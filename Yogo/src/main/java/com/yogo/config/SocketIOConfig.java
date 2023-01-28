@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.annotation.PreDestroy;
 
-//@CrossOrigin
-//@Component
+@CrossOrigin
+@Component
 @Log4j2
 public class SocketIOConfig {
 

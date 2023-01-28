@@ -11,19 +11,16 @@ import com.yogo.business.auth.UserDto;
 import com.yogo.business.auth.UserService;
 import com.yogo.business.booking.BookingInfoDto;
 import com.yogo.business.chat.Message;
-import com.yogo.business.chat.MessageChild;
-import com.yogo.config.SocketServer;
 import com.yogo.enums.Role;
 import com.yogo.enums.Status;
-import com.yogo.model.Booking;
+import com.yogo.model.User;
 import com.yogo.utils.EventConstants;
 import lombok.extern.log4j.Log4j2;
+import org.apache.log4j.net.SocketServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.annotation.OnEvent;
-import com.yogo.model.BookingInfo;
 import com.yogo.business.map.Coordinates;
-import com.yogo.model.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +28,8 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class SocketHandler {
 
-//    @Autowired
-//    private SocketIOServer socketIOServer;
+    @Autowired
+    private SocketIOServer socketIOServer;
 
     @Autowired
     private UserService userService;
@@ -42,33 +39,32 @@ public class SocketHandler {
         /**
          * Sự kiện clien gửi userId về server
          */
-//        SocketServer.socket.addEventListener(EventConstants.AUTH, String.class, new DataListener<String>() {
-//            @Override
-//            public void onData(SocketIOClient client, String userId, AckRequest ackSender) throws Exception {
-//                log.info("userID : " + userId);
-//                User user = userService.findById(userId);
-//
-//                if (Role.ROLE_CLIENT.equals(user.getRole())) {
-//                    if (!checkClientExist(userId))
-//                        SocketClientManage.getInstance().list.add(new UserSocket()
-//                                .withUserId(userId)
-//                                .withSocketId(client.getSessionId()));
-//                } else {
-//                    if (!checkDriverExist(userId))
-//                        SocketDriverManage.getInstance().list.add(new UserSocket()
-//                                .withUserId(userId)
-//                                .withSocketId(client.getSessionId())
-//                                .withStatus(Status.READY));
-//                }
-//                log.info("list of clients : " + SocketClientManage.getInstance().list.size());
-//                log.info("list of drivers : " + SocketDriverManage.getInstance().list.size());
-//            }
-//        });
+        socketIOServer.addEventListener(EventConstants.AUTH, String.class, new DataListener<String>() {
+            @Override
+            public void onData(SocketIOClient client, String userId, AckRequest ackSender) throws Exception {
+                User user = userService.findById(userId);
+
+                if (Role.ROLE_CLIENT.equals(user.getRole())) {
+                    if (!checkClientExist(userId))
+                        SocketClientManage.getInstance().list.add(new UserSocket()
+                                .withUserId(userId)
+                                .withSocketId(client.getSessionId()));
+                } else {
+                    if (!checkDriverExist(userId))
+                        SocketDriverManage.getInstance().list.add(new UserSocket()
+                                .withUserId(userId)
+                                .withSocketId(client.getSessionId())
+                                .withStatus(Status.READY));
+                }
+                log.info("list of clients : " + SocketClientManage.getInstance().list.size());
+                log.info("list of drivers : " + SocketDriverManage.getInstance().list.size());
+            }
+        });
 
         /**
          * Sự kiện chat giữa 2 user
          */
-        SocketServer.socket.addEventListener(EventConstants.CHAT, Message.class, new DataListener<Message>() {
+        socketIOServer.addEventListener(EventConstants.CHAT, Message.class, new DataListener<Message>() {
             @Override
             public void onData(SocketIOClient socketIOClient, Message data, AckRequest ackRequest) throws Exception {
                 log.info(socketIOClient.getSessionId() + " : " + data.toString());
@@ -90,8 +86,7 @@ public class SocketHandler {
         log.info("booking : " + booking.toString());
         log.info("driver : " + uuidDriver.toString());
         try {
-//            socketIOServer.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
-            SocketServer.socket.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
+            socketIOServer.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
         } catch (Exception ex) {
             throw ex;
         }
@@ -103,8 +98,7 @@ public class SocketHandler {
     @OnEvent(value = EventConstants.TRACK)
     public void sendTracking(Coordinates coordinates, UUID uuid) {
         try {
-//            socketIOServer.getClient(uuid).sendEvent(EventConstants.TRACK, coordinates);
-            SocketServer.socket.getClient(uuid).sendEvent(EventConstants.TRACK, coordinates);
+            socketIOServer.getClient(uuid).sendEvent(EventConstants.TRACK, coordinates);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -118,8 +112,7 @@ public class SocketHandler {
     @OnEvent(value = EventConstants.SEND_DRIVER)
     public void sendDriverInfo(UserDto driverInfo, UUID uuidClient) {
         try {
-//            socketIOServer.getClient(uuidClient).sendEvent(EventConstants.SEND_DRIVER, driverInfo);
-            SocketServer.socket.getClient(uuidClient).sendEvent(EventConstants.SEND_DRIVER, driverInfo);
+            socketIOServer.getClient(uuidClient).sendEvent(EventConstants.SEND_DRIVER, driverInfo);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
