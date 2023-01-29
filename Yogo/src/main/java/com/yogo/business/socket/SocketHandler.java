@@ -16,7 +16,6 @@ import com.yogo.enums.Status;
 import com.yogo.model.User;
 import com.yogo.utils.EventConstants;
 import lombok.extern.log4j.Log4j2;
-import org.apache.log4j.net.SocketServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.annotation.OnEvent;
@@ -41,7 +40,7 @@ public class SocketHandler {
          */
         socketIOServer.addEventListener(EventConstants.AUTH, String.class, new DataListener<String>() {
             @Override
-            public void onData(SocketIOClient client, String userId, AckRequest ackSender) throws Exception {
+            public void onData(SocketIOClient client, String userId, AckRequest ackSender) {
                 User user = userService.findById(userId);
 
                 if (Role.ROLE_CLIENT.equals(user.getRole())) {
@@ -85,11 +84,7 @@ public class SocketHandler {
     public void sendBooking(BookingInfoDto booking, UUID uuidDriver) {
         log.info("booking : " + booking.toString());
         log.info("driver : " + uuidDriver.toString());
-        try {
-            socketIOServer.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
-        } catch (Exception ex) {
-            throw ex;
-        }
+        socketIOServer.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
     }
 
     /**
