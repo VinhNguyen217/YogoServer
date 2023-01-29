@@ -5,12 +5,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.corundumstudio.socketio.AckRequest;
-import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.yogo.business.auth.UserDto;
 import com.yogo.business.auth.UserService;
 import com.yogo.business.booking.BookingInfoDto;
 import com.yogo.business.chat.Message;
+import com.yogo.config.SocketServer;
 import com.yogo.enums.Role;
 import com.yogo.enums.Status;
 import com.yogo.model.User;
@@ -28,9 +28,6 @@ import org.springframework.stereotype.Service;
 public class SocketHandler {
 
     @Autowired
-    private SocketIOServer socketIOServer;
-
-    @Autowired
     private UserService userService;
 
     @Bean
@@ -38,7 +35,7 @@ public class SocketHandler {
         /**
          * Sự kiện clien gửi userId về server
          */
-        socketIOServer.addEventListener(EventConstants.AUTH, String.class, new DataListener<String>() {
+        SocketServer.socket.addEventListener(EventConstants.AUTH, String.class, new DataListener<String>() {
             @Override
             public void onData(SocketIOClient client, String userId, AckRequest ackSender) {
                 User user = userService.findById(userId);
@@ -63,7 +60,7 @@ public class SocketHandler {
         /**
          * Sự kiện chat giữa 2 user
          */
-        socketIOServer.addEventListener(EventConstants.CHAT, Message.class, new DataListener<Message>() {
+        SocketServer.socket.addEventListener(EventConstants.CHAT, Message.class, new DataListener<Message>() {
             @Override
             public void onData(SocketIOClient socketIOClient, Message data, AckRequest ackRequest) throws Exception {
                 log.info(socketIOClient.getSessionId() + " : " + data.toString());
@@ -84,7 +81,7 @@ public class SocketHandler {
     public void sendBooking(BookingInfoDto booking, UUID uuidDriver) {
         log.info("booking : " + booking.toString());
         log.info("driver : " + uuidDriver.toString());
-        socketIOServer.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
+        SocketServer.socket.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
     }
 
     /**
@@ -92,11 +89,7 @@ public class SocketHandler {
      */
     @OnEvent(value = EventConstants.TRACK)
     public void sendTracking(Coordinates coordinates, UUID uuid) {
-        try {
-            socketIOServer.getClient(uuid).sendEvent(EventConstants.TRACK, coordinates);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
+        SocketServer.socket.getClient(uuid).sendEvent(EventConstants.TRACK, coordinates);
     }
 
     /**
@@ -106,11 +99,7 @@ public class SocketHandler {
      */
     @OnEvent(value = EventConstants.SEND_DRIVER)
     public void sendDriverInfo(UserDto driverInfo, UUID uuidClient) {
-        try {
-            socketIOServer.getClient(uuidClient).sendEvent(EventConstants.SEND_DRIVER, driverInfo);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
+        SocketServer.socket.getClient(uuidClient).sendEvent(EventConstants.SEND_DRIVER, driverInfo);
     }
 
     private Boolean checkDriverExist(String userId) {
