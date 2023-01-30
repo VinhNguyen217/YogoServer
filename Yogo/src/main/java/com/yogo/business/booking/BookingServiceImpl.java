@@ -21,10 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,20 +51,16 @@ public class BookingServiceImpl implements BookingService {
                 .withStatus(Status.CREATED);
         Booking booking = bookingRepository.save(bookingCreate);
 
+        Booking bookingFind = bookingRepository.findById(booking.getId()).get();
+        log.info("booking find : " + bookingFind);
+
         BookingInfoDto bookingInfo = booking.convert();
         bookingInfo.setNameStartPoint(bookingRequest.getPickUp().getFullAddress());
         bookingInfo.setNameEndPoint(bookingRequest.getDropOff().getFullAddress());
         bookingInfo.setUserName(userDto.getUsername());
-
-        if (!SocketDriverManage.getInstance().list.isEmpty()) {
-            List<UserSocket> driversReady = SocketDriverManage.getInstance().list
-                    .stream()
-                    .filter(u -> u.getStatus().equals(Status.READY))
-                    .collect(Collectors.toList());
-            if (!driversReady.isEmpty()) {
-                socketHandler.sendBooking(bookingInfo, driversReady.get(0).getSocketId());
-            }
-        }
+        UserSocket driverReady = userService.findDriver();
+        if (driverReady != null)
+            socketHandler.sendBooking(bookingInfo, driverReady.getSocketIOClient().getSessionId());
         return booking;
     }
 
@@ -96,7 +89,7 @@ public class BookingServiceImpl implements BookingService {
             });
             clients.forEach(c -> {
                 if (c.getUserId().equals(booking.getUserId()))
-                    socketHandler.sendDriverInfo(userDto, c.getSocketId());
+                    socketHandler.sendDriverInfo(userDto, c.getSocketIOClient().getSessionId());
             });
             return booking;
         }

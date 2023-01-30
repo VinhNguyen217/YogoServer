@@ -45,12 +45,12 @@ public class SocketHandler {
                     if (!checkClientExist(userId))
                         SocketClientManage.getInstance().list.add(new UserSocket()
                                 .withUserId(userId)
-                                .withSocketId(client.getSessionId()));
+                                .withSocketIOClient(client));
                 } else {
                     if (!checkDriverExist(userId))
                         SocketDriverManage.getInstance().list.add(new UserSocket()
                                 .withUserId(userId)
-                                .withSocketId(client.getSessionId())
+                                .withSocketIOClient(client)
                                 .withStatus(Status.READY));
                 }
                 log.info("list of clients : " + SocketClientManage.getInstance().list.size());
@@ -100,7 +100,6 @@ public class SocketHandler {
 
     /**
      * Gửi thông tin lái xe cho khách hàng
-     *
      * @param
      */
     @OnEvent(value = EventConstants.SEND_DRIVER)

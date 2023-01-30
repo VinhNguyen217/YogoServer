@@ -8,8 +8,6 @@ import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
 import lombok.extern.log4j.Log4j2;
 
-import java.net.Socket;
-
 @Log4j2
 public class SocketServer {
 
@@ -28,17 +26,16 @@ public class SocketServer {
         socket.addConnectListener(new ConnectListener() {
             @Override
             public void onConnect(SocketIOClient client) {
-                log.info("connect with " + client.getSessionId());
+                log.info("connect with : " + client.getSessionId());
             }
         });
 
         socket.addDisconnectListener(new DisconnectListener() {
             @Override
-            public void onDisconnect(SocketIOClient socketIOClient) {
-                log.info("disconnect " + socketIOClient.getSessionId());
+            public void onDisconnect(SocketIOClient client) {
+                log.info("disconnect with " + client.getSessionId());
             }
         });
-
         return socket;
     }
 }

@@ -4,7 +4,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yogo.business.socket.SocketDriverManage;
+import com.yogo.business.socket.UserSocket;
 import com.yogo.enums.Role;
+import com.yogo.enums.Status;
 import com.yogo.message.MessageText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -99,5 +102,22 @@ public class UserService {
     public User isSessionValid(String sessionId) {
         User user = SessionManager.getInstance().map.get(sessionId);
         return user;
+    }
+
+    public UserSocket findDriver() {
+        if (!SocketDriverManage.getInstance().list.isEmpty()) {
+            List<UserSocket> driversReady = SocketDriverManage.getInstance().list
+                    .stream()
+                    .filter(u -> u.getStatus().equals(Status.READY))
+                    .collect(Collectors.toList());
+            if (driversReady.size() == 1)
+                return driversReady.get(0);
+            if (driversReady.size() > 1) {
+                Random r = new Random();
+                int n = r.nextInt(driversReady.size());
+                return driversReady.get(n);
+            }
+        }
+        return null;
     }
 }
