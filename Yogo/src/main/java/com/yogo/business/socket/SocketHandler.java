@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.corundumstudio.socketio.AckRequest;
+import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.yogo.business.auth.UserDto;
 import com.yogo.business.auth.UserService;
@@ -81,7 +82,12 @@ public class SocketHandler {
     public void sendBooking(BookingInfoDto booking, UUID uuidDriver) {
         log.info("booking : " + booking.toString());
         log.info("driver : " + uuidDriver.toString());
-        SocketServer.socket.getClient(uuidDriver).sendEvent(EventConstants.SEND_BOOKING, booking);
+        SocketIOClient client = SocketServer.socket.getClient(uuidDriver);
+        if (client == null) {
+            log.info("null");
+            return;
+        }
+        client.sendEvent(EventConstants.SEND_BOOKING, booking);
     }
 
     /**
