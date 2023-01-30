@@ -1,6 +1,7 @@
 package com.yogo.config;
 
 import com.corundumstudio.socketio.Configuration;
+import com.corundumstudio.socketio.SocketConfig;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
@@ -18,6 +19,10 @@ public class SocketServer {
         Configuration config = new Configuration();
         config.setHostname("0.0.0.0");
         config.setPort(8086);
+        SocketConfig sockConf = new SocketConfig();
+        sockConf.setReuseAddress(true);
+        config.setSocketConfig(sockConf);
+
         final SocketIOServer socket = new SocketIOServer(config);
 
         socket.addConnectListener(new ConnectListener() {
