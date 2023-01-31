@@ -50,6 +50,7 @@ public class BookingServiceImpl implements BookingService {
                 .withNotes(bookingRequest.getNotes())
                 .withStatus(Status.CREATED);
         Booking booking = bookingRepository.save(bookingCreate);
+        log.info("booingId create : " + booking.getId());
 
         BookingInfoDto bookingInfo = booking.convert();
         bookingInfo.setNameStartPoint(bookingRequest.getPickUp().getFullAddress());
@@ -73,6 +74,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking acceptBooking(String bookingId, HttpServletRequest servletRequest) {
+        log.info("bookingId : " + bookingId);
         UserDto userDto = userService.checkSession(servletRequest);
         Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
         log.info("booking : " + bookingOptional);
