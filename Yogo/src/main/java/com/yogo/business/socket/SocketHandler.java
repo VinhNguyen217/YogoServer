@@ -10,6 +10,8 @@ import com.corundumstudio.socketio.listener.DataListener;
 import com.yogo.business.auth.UserDto;
 import com.yogo.business.auth.UserService;
 import com.yogo.business.booking.BookingInfoDto;
+import com.yogo.business.booking.CancelInfo;
+import com.yogo.business.booking.FinishInfo;
 import com.yogo.business.chat.Message;
 import com.yogo.config.SocketServer;
 import com.yogo.enums.Role;
@@ -99,6 +101,28 @@ public class SocketHandler {
     @OnEvent(value = EventConstants.SEND_DRIVER)
     public void sendDriverInfo(UserDto driverInfo, UUID uuidClient) {
         SocketServer.socket.getClient(uuidClient).sendEvent(EventConstants.SEND_DRIVER, driverInfo);
+    }
+
+    /**
+     * Send cancel booking info to driver
+     *
+     * @param cancelInfo
+     * @param socketIOClient
+     */
+    @OnEvent(value = EventConstants.CANCEL_BOOKING)
+    public void cancelBooing(CancelInfo cancelInfo, SocketIOClient socketIOClient) {
+        socketIOClient.sendEvent(EventConstants.CANCEL_BOOKING, cancelInfo);
+    }
+
+    /**
+     * Send finish booking info to client
+     *
+     * @param finishInfo
+     * @param socketIOClient
+     */
+    @OnEvent(value = EventConstants.FINISH)
+    public void finishBooing(FinishInfo finishInfo, SocketIOClient socketIOClient) {
+        socketIOClient.sendEvent(EventConstants.FINISH, finishInfo);
     }
 
     private Boolean checkDriverExist(String userId) {

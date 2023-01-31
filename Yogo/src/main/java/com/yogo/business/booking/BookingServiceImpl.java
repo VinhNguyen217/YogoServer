@@ -1,19 +1,15 @@
 package com.yogo.business.booking;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yogo.business.auth.UserDto;
 import com.yogo.business.auth.UserService;
 import com.yogo.business.socket.SocketClientManage;
 import com.yogo.business.socket.SocketDriverManage;
 import com.yogo.business.socket.SocketHandler;
 import com.yogo.business.socket.UserSocket;
-import com.yogo.enums.Role;
 import com.yogo.enums.Status;
 import com.yogo.message.MessageText;
 import com.yogo.model.Booking;
-import com.yogo.model.User;
 import com.yogo.repository.BookingRepository;
-import com.yogo.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +18,6 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -39,16 +34,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking create(BookingRequest bookingRequest, HttpServletRequest servletRequest) {
         UserDto userDto = userService.checkSession(servletRequest);
-        Booking bookingCreate = new Booking()
-                .withLatStartPoint(bookingRequest.getPickUp().getLatitude())
-                .withLonStartPoint(bookingRequest.getPickUp().getLongitude())
-                .withLatEndPoint(bookingRequest.getDropOff().getLatitude())
-                .withLonEndPoint(bookingRequest.getDropOff().getLongitude())
-                .withServiceId(bookingRequest.getServiceId())
-                .withUserId(userDto.getId())
-                .withTotalPrice(bookingRequest.getTotalPrice())
-                .withNotes(bookingRequest.getNotes())
-                .withStatus(Status.CREATED);
+        Booking bookingCreate = new Booking().withLatStartPoint(bookingRequest.getPickUp().getLatitude()).withLonStartPoint(bookingRequest.getPickUp().getLongitude()).withLatEndPoint(bookingRequest.getDropOff().getLatitude()).withLonEndPoint(bookingRequest.getDropOff().getLongitude()).withServiceId(bookingRequest.getServiceId()).withUserId(userDto.getId()).withTotalPrice(bookingRequest.getTotalPrice()).withNotes(bookingRequest.getNotes()).withStatus(Status.CREATED);
         Booking booking = bookingRepository.save(bookingCreate);
 
         BookingInfoDto bookingInfo = booking.convert();
@@ -56,8 +42,7 @@ public class BookingServiceImpl implements BookingService {
         bookingInfo.setNameEndPoint(bookingRequest.getDropOff().getFullAddress());
         bookingInfo.setUserName(userDto.getUsername());
         UserSocket driverReady = userService.findDriver();
-        if (driverReady != null)
-            socketHandler.sendBooking(bookingInfo, driverReady.getSocketIOClient());
+        if (driverReady != null) socketHandler.sendBooking(bookingInfo, driverReady.getSocketIOClient());
         return booking;
     }
 
@@ -69,6 +54,13 @@ public class BookingServiceImpl implements BookingService {
         throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, MessageText.NOT_FOUND);
     }
 
+    /**
+     * Driver accept booking from client
+     *
+     * @param bookingId
+     * @param servletRequest
+     * @return
+     */
     @Override
     public Booking acceptBooking(String bookingId, HttpServletRequest servletRequest) {
         UserDto userDto = userService.checkSession(servletRequest);
@@ -80,12 +72,63 @@ public class BookingServiceImpl implements BookingService {
             List<UserSocket> drivers = SocketDriverManage.getInstance().list;
             List<UserSocket> clients = SocketClientManage.getInstance().list;
             drivers.forEach(d -> {
-                if (d.getUserId().equals(userDto.getId()))
-                    d.setStatus(Status.BUSY);
+                if (d.getUserId().equals(userDto.getId())) d.setStatus(Status.BUSY);
             });
             clients.forEach(c -> {
                 if (c.getUserId().equals(booking.getUserId()))
                     socketHandler.sendDriverInfo(userDto, c.getSocketIOClient().getSessionId());
+            });
+            return booking;
+        }
+        throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, MessageText.NOT_FOUND);
+    }
+
+    /**
+     * Client cancel booking from driver
+     *
+     * @param bookingId
+     * @param driverId
+     * @param servletRequest
+     * @return
+     */
+    @Override
+    public Booking cancelBooking(String bookingId, String driverId, HttpServletRequest servletRequest) {
+        UserDto userDto = userService.checkSession(servletRequest);
+        Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+        if (bookingOptional.isPresent()) {
+            Booking booking = bookingOptional.get();
+            booking.setStatus(Status.CANCEL);
+            bookingRepository.save(booking);
+            SocketDriverManage.getInstance().list.forEach(d -> {
+                if (driverId.equals(d.getUserId())) {
+                    d.setStatus(Status.READY);
+                    CancelInfo cancelInfo = new CancelInfo().withBookingId(bookingId).withCancelBy(userDto.getUsername());
+                    socketHandler.cancelBooing(cancelInfo, d.getSocketIOClient());
+                }
+            });
+            return booking;
+        }
+        throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, MessageText.NOT_FOUND);
+    }
+
+    @Override
+    public Booking finishBooking(String bookingId, HttpServletRequest servletRequest) {
+        UserDto userDto = userService.checkSession(servletRequest);
+        Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+        if (bookingOptional.isPresent()) {
+            Booking booking = bookingOptional.get();
+            booking.setStatus(Status.FINISH);
+            bookingRepository.save(booking);
+            SocketDriverManage.getInstance().list.forEach(d -> {
+                if (userDto.getId().equals(d.getUserId())) {
+                    d.setStatus(Status.READY);
+                }
+            });
+            SocketClientManage.getInstance().list.forEach(c -> {
+                if (booking.getUserId().equals(c.getUserId())) {
+                    FinishInfo finishInfo = new FinishInfo().withBookingId(bookingId);
+                    socketHandler.finishBooing(finishInfo, c.getSocketIOClient());
+                }
             });
             return booking;
         }

@@ -8,7 +8,11 @@ public interface BookingService {
 
     Booking create(BookingRequest bookingRequest, HttpServletRequest servletRequest);
 
-    Booking findById(String id,HttpServletRequest servletRequest);
+    Booking findById(String id, HttpServletRequest servletRequest);
 
     Booking acceptBooking(String bookingId, HttpServletRequest servletRequest);
+
+    Booking cancelBooking(String bookingId, String driverId, HttpServletRequest servletRequest);
+
+    Booking finishBooking(String bookingId, HttpServletRequest servletRequest);
 }

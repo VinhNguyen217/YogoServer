@@ -31,35 +31,22 @@ public class BookingController {
     }
 
     @PostMapping("/acceptBooking")
-    public ResponseEntity<?> acceptBooking(@RequestParam("bookingId") String bookingId, HttpServletRequest servletRequest) {
+    public ResponseEntity<?> acceptBooking(@RequestParam("bookingId") String bookingId,
+                                           HttpServletRequest servletRequest) {
         return ResponseMessage.success(bookingService.acceptBooking(bookingId, servletRequest));
     }
 
     @PostMapping("/cancelBooking")
-    public ResponseEntity<?> cancleBooking(@RequestHeader(value = "session") String sessionKey, @RequestParam Integer idBooking) {
-//        HashMap<String, Object> map = new HashMap<>();
-//        if (userService.isSessionValid(sessionKey) != null) {
-//            Booking existBooking = bookingService.findById(idBooking);
-//            bookingService.create(existBooking);
-//            map.put("result", "Hủy thành công");
-//            return ResponseMessage.success(map);
-//        } else throw new HttpClientErrorException(HttpStatus.FORBIDDEN, MessageText.FORBIDDEN);
-        return null;
+    public ResponseEntity<?> cancelBooking(@RequestParam(value = "bookingId") String bookingId,
+                                           @RequestParam(value = "driverId") String driverId,
+                                           HttpServletRequest servletRequest) {
+        return ResponseMessage.success(bookingService.cancelBooking(bookingId, driverId, servletRequest));
     }
 
     @PostMapping("/finish")
-    public void finishJourney(@RequestHeader(value = "session") String sessionKey, @RequestParam Integer idClient) {
-//        if (userService.isSessionValid(sessionKey) != null) {
-//            User driver = userService.isSessionValid(sessionKey); // lấy ra driver dựa vào sessionId
-//
-//            UUID uuidDriver = null;
-//            SocketIOClient socketIOClient = socketIOServer.getClient(uuidDriver);
-//
-//            socket.finish(socketIOClient, idClient);
-//
-//            DriverManager.getInstance().driverWork.remove(driver); // Xóa driver khỏi danh sách đang làm việc
-//            DriverManager.getInstance().driverWait.add(driver); // Thêm driver vào danh sách chờ
-//        }
+    public ResponseEntity<?> finishBooking(@RequestParam(value = "bookingId") String bookingId,
+                                           HttpServletRequest servletRequest) {
+        return ResponseMessage.success(bookingService.finishBooking(bookingId, servletRequest));
     }
 
     @PostMapping("/setTracking")
