@@ -79,15 +79,8 @@ public class SocketHandler {
      * Gửi thông tin khách hàng và thông tin đặt xe cho lái xe
      */
     @OnEvent(value = EventConstants.SEND_BOOKING)
-    public void sendBooking(BookingInfoDto booking, UUID uuidDriver) {
-        log.info("booking : " + booking.toString());
-        log.info("driver : " + uuidDriver.toString());
-        SocketIOClient client = SocketServer.socket.getClient(uuidDriver);
-        if (client == null) {
-            log.info("null");
-            return;
-        }
-        client.sendEvent(EventConstants.SEND_BOOKING, booking);
+    public void sendBooking(BookingInfoDto booking, SocketIOClient socketIODriver) {
+        socketIODriver.sendEvent(EventConstants.SEND_BOOKING, booking);
     }
 
     /**
@@ -100,6 +93,7 @@ public class SocketHandler {
 
     /**
      * Gửi thông tin lái xe cho khách hàng
+     *
      * @param
      */
     @OnEvent(value = EventConstants.SEND_DRIVER)

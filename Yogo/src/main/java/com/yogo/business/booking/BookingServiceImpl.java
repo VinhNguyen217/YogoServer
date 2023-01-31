@@ -51,16 +51,15 @@ public class BookingServiceImpl implements BookingService {
                 .withStatus(Status.CREATED);
         Booking booking = bookingRepository.save(bookingCreate);
 
-        Booking bookingFind = bookingRepository.findById(booking.getId()).get();
-        log.info("booking find : " + bookingFind);
-
         BookingInfoDto bookingInfo = booking.convert();
         bookingInfo.setNameStartPoint(bookingRequest.getPickUp().getFullAddress());
         bookingInfo.setNameEndPoint(bookingRequest.getDropOff().getFullAddress());
         bookingInfo.setUserName(userDto.getUsername());
         UserSocket driverReady = userService.findDriver();
-        if (driverReady != null)
-            socketHandler.sendBooking(bookingInfo, driverReady.getSocketIOClient().getSessionId());
+        if (driverReady != null) {
+            log.info("driver ready : " + driverReady.getSocketIOClient());
+            socketHandler.sendBooking(bookingInfo, driverReady.getSocketIOClient());
+        }
         return booking;
     }
 
