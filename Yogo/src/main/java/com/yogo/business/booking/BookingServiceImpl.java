@@ -50,17 +50,14 @@ public class BookingServiceImpl implements BookingService {
                 .withNotes(bookingRequest.getNotes())
                 .withStatus(Status.CREATED);
         Booking booking = bookingRepository.save(bookingCreate);
-        log.info("booingId create : " + booking.getId());
 
         BookingInfoDto bookingInfo = booking.convert();
         bookingInfo.setNameStartPoint(bookingRequest.getPickUp().getFullAddress());
         bookingInfo.setNameEndPoint(bookingRequest.getDropOff().getFullAddress());
         bookingInfo.setUserName(userDto.getUsername());
         UserSocket driverReady = userService.findDriver();
-        if (driverReady != null) {
-            log.info("driver ready : " + driverReady.getSocketIOClient());
+        if (driverReady != null)
             socketHandler.sendBooking(bookingInfo, driverReady.getSocketIOClient());
-        }
         return booking;
     }
 
@@ -74,10 +71,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking acceptBooking(String bookingId, HttpServletRequest servletRequest) {
-        log.info("bookingId : " + bookingId);
         UserDto userDto = userService.checkSession(servletRequest);
         Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
-        log.info("booking : " + bookingOptional);
         if (bookingOptional.isPresent()) {
             Booking booking = bookingOptional.get();
             booking.setStatus(Status.ACCEPT);

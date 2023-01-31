@@ -31,7 +31,7 @@ public class BookingController {
     }
 
     @PostMapping("/acceptBooking")
-    public ResponseEntity<?> acceptBooking(@RequestBody String bookingId, HttpServletRequest servletRequest) {
+    public ResponseEntity<?> acceptBooking(@RequestParam("bookingId") String bookingId, HttpServletRequest servletRequest) {
         return ResponseMessage.success(bookingService.acceptBooking(bookingId, servletRequest));
     }
 

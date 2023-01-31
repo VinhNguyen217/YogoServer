@@ -8,8 +8,8 @@ import com.yogo.model.Booking;
 import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, String> {
-    @Query(value = "SELECT * FROM booking ORDER BY id_booking DESC LIMIT 1", nativeQuery = true)
-    Booking findLastBooking();
+    @Query(value = "SELECT * FROM booking WHERE id = :id", nativeQuery = true)
+    Optional<Booking> findById(String id);
 
     Optional<Booking> findByIdAndUserId(String id, String userId);
 }
