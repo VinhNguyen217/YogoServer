@@ -96,28 +96,22 @@ public class SocketHandler {
         SocketServer.socket.addEventListener(EventConstants.TRACK, TrackSendInfo.class, new DataListener<TrackSendInfo>() {
             @Override
             public void onData(SocketIOClient socketIOClient, TrackSendInfo trackSendInfo, AckRequest ackRequest) {
+                log.info("socket driver : " + socketIOClient);
                 log.info("track send info : " + trackSendInfo);
                 // find client
                 Optional<UserSocket> userSocketClient = SocketClientManage
                         .getInstance()
                         .list.stream().filter(c -> trackSendInfo.getTo().equals(c.getUserId()))
                         .findFirst();
-                log.info("client : " + userSocketClient.get());
-
-                // find driver
-                Optional<UserSocket> userSocketDriver = SocketDriverManage
-                        .getInstance()
-                        .list.stream().filter(d -> userSocketClient.equals(d.getSocketIOClient()))
-                        .findFirst();
-                log.info("driver : " + userSocketDriver.get());
+                log.info("socket client : " + userSocketClient.get());
 
                 TrackReceiveInfo trackReceiveInfo = new TrackReceiveInfo()
-                        .withFrom(userSocketDriver.get().getUserId())
                         .withLat(trackSendInfo.getLat())
                         .withLon(trackSendInfo.getLon());
-                userSocketClient.ifPresent(userSocket -> userSocket
+                log.info("track receive : " + trackReceiveInfo);
+                userSocketClient.get()
                         .getSocketIOClient()
-                        .sendEvent(EventConstants.TRACK, trackReceiveInfo));
+                        .sendEvent(EventConstants.TRACK, trackReceiveInfo);
             }
         });
     }

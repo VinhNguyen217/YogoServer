@@ -10,7 +10,6 @@ import lombok.With;
 @NoArgsConstructor
 @With
 public class TrackReceiveInfo {
-    private String from;
     private Double lat;    // Vĩ độ
     private Double lon;   // Kinh độ
 }
