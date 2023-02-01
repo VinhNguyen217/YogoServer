@@ -5,11 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @With
-public class MessageChild {
-    private String userName;
-    private String content;
+public class MessageSend {
+    private String from;
+    private String to;
+    private String msg;
 }

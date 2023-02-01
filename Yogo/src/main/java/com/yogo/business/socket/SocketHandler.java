@@ -12,7 +12,8 @@ import com.yogo.business.auth.UserService;
 import com.yogo.business.booking.BookingInfoDto;
 import com.yogo.business.booking.CancelInfo;
 import com.yogo.business.booking.FinishInfo;
-import com.yogo.business.chat.Message;
+import com.yogo.business.chat.MessageReceive;
+import com.yogo.business.chat.MessageSend;
 import com.yogo.business.track.TrackReceiveInfo;
 import com.yogo.business.track.TrackSendInfo;
 import com.yogo.config.SocketServer;
@@ -65,9 +66,27 @@ public class SocketHandler {
         /**
          * Chat for client and driver
          */
-        SocketServer.socket.addEventListener(EventConstants.CHAT, Message.class, new DataListener<Message>() {
+        SocketServer.socket.addEventListener(EventConstants.CHAT, MessageSend.class, new DataListener<MessageSend>() {
             @Override
-            public void onData(SocketIOClient socketIOClient, Message data, AckRequest ackRequest) throws Exception {
+            public void onData(SocketIOClient socketIOClient, MessageSend messageSend, AckRequest ackRequest) {
+                Optional<UserSocket> userSocketOptional;
+                User user = userService.findById(messageSend.getTo());
+                if (Role.ROLE_CLIENT.equals(user.getRole()))
+                    userSocketOptional = SocketClientManage
+                            .getInstance()
+                            .list.stream().filter(c -> messageSend.getTo().equals(c.getUserId()))
+                            .findFirst();
+                else userSocketOptional = SocketDriverManage
+                        .getInstance()
+                        .list.stream().filter(d -> messageSend.getTo().equals(d.getUserId()))
+                        .findFirst();
+                if (userSocketOptional.isPresent()) {
+                    UserSocket userSocket = userSocketOptional.get();
+                    MessageReceive messageReceive = new MessageReceive()
+                            .withFrom(messageSend.getFrom())
+                            .withMsg(messageSend.getMsg());
+                    userSocket.getSocketIOClient().sendEvent(EventConstants.CHAT, messageReceive);
+                }
             }
         });
 
@@ -76,18 +95,21 @@ public class SocketHandler {
          */
         SocketServer.socket.addEventListener(EventConstants.TRACK, TrackSendInfo.class, new DataListener<TrackSendInfo>() {
             @Override
-            public void onData(SocketIOClient socketIOClient, TrackSendInfo trackSendInfo, AckRequest ackRequest) throws Exception {
+            public void onData(SocketIOClient socketIOClient, TrackSendInfo trackSendInfo, AckRequest ackRequest) {
+                log.info("track send info : " + trackSendInfo);
                 // find client
                 Optional<UserSocket> userSocketClient = SocketClientManage
                         .getInstance()
                         .list.stream().filter(c -> trackSendInfo.getTo().equals(c.getUserId()))
                         .findFirst();
+                log.info("client : " + userSocketClient.get());
 
                 // find driver
                 Optional<UserSocket> userSocketDriver = SocketDriverManage
                         .getInstance()
                         .list.stream().filter(d -> userSocketClient.equals(d.getSocketIOClient()))
                         .findFirst();
+                log.info("driver : " + userSocketDriver.get());
 
                 TrackReceiveInfo trackReceiveInfo = new TrackReceiveInfo()
                         .withFrom(userSocketDriver.get().getUserId())
@@ -110,6 +132,7 @@ public class SocketHandler {
 
     /**
      * send driver info to client
+     *
      * @param
      */
     @OnEvent(value = EventConstants.SEND_DRIVER)
@@ -119,6 +142,7 @@ public class SocketHandler {
 
     /**
      * Send cancel booking info to driver
+     *
      * @param cancelInfo
      * @param socketIOClient
      */
