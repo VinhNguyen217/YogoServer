@@ -1,11 +1,11 @@
 package com.yogo.business.socket;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.corundumstudio.socketio.AckRequest;
-import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.yogo.business.auth.UserDto;
 import com.yogo.business.auth.UserService;
@@ -13,6 +13,8 @@ import com.yogo.business.booking.BookingInfoDto;
 import com.yogo.business.booking.CancelInfo;
 import com.yogo.business.booking.FinishInfo;
 import com.yogo.business.chat.Message;
+import com.yogo.business.track.TrackReceiveInfo;
+import com.yogo.business.track.TrackSendInfo;
 import com.yogo.config.SocketServer;
 import com.yogo.enums.Role;
 import com.yogo.enums.Status;
@@ -22,7 +24,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.annotation.OnEvent;
-import com.yogo.business.map.Coordinates;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +36,9 @@ public class SocketHandler {
 
     @Bean
     public void handleEventAuto() {
+
         /**
-         * Sự kiện clien gửi userId về server
+         * send userId to server
          */
         SocketServer.socket.addEventListener(EventConstants.AUTH, String.class, new DataListener<String>() {
             @Override
@@ -61,24 +63,45 @@ public class SocketHandler {
         });
 
         /**
-         * Sự kiện chat giữa 2 user
+         * Chat for client and driver
          */
         SocketServer.socket.addEventListener(EventConstants.CHAT, Message.class, new DataListener<Message>() {
             @Override
             public void onData(SocketIOClient socketIOClient, Message data, AckRequest ackRequest) throws Exception {
-                log.info(socketIOClient.getSessionId() + " : " + data.toString());
-//                socketIOServer.getBroadcastOperations().sendEvent(EventConstants.CHAT, data.getContent());
-//                UUID uuid = UUID.fromString(data.getTarget());
-//                MessageChild dataSent = new MessageChild()
-//                        .withUserName(data.getUserName())
-//                        .withContent(data.getContent());
-//                socketIOServer.getClient(uuid).sendEvent(EventConstants.CHAT_PRIVATE, dataSent);
+            }
+        });
+
+        /**
+         * Send track info from driver to client
+         */
+        SocketServer.socket.addEventListener(EventConstants.TRACK, TrackSendInfo.class, new DataListener<TrackSendInfo>() {
+            @Override
+            public void onData(SocketIOClient socketIOClient, TrackSendInfo trackSendInfo, AckRequest ackRequest) throws Exception {
+                // find client
+                Optional<UserSocket> userSocketClient = SocketClientManage
+                        .getInstance()
+                        .list.stream().filter(c -> trackSendInfo.getTo().equals(c.getUserId()))
+                        .findFirst();
+
+                // find driver
+                Optional<UserSocket> userSocketDriver = SocketDriverManage
+                        .getInstance()
+                        .list.stream().filter(d -> userSocketClient.equals(d.getSocketIOClient()))
+                        .findFirst();
+
+                TrackReceiveInfo trackReceiveInfo = new TrackReceiveInfo()
+                        .withFrom(userSocketDriver.get().getUserId())
+                        .withLat(trackSendInfo.getLat())
+                        .withLon(trackSendInfo.getLon());
+                userSocketClient.ifPresent(userSocket -> userSocket
+                        .getSocketIOClient()
+                        .sendEvent(EventConstants.TRACK, trackReceiveInfo));
             }
         });
     }
 
     /**
-     * Gửi thông tin khách hàng và thông tin đặt xe cho lái xe
+     * send client info and booking info to driver
      */
     @OnEvent(value = EventConstants.SEND_BOOKING)
     public void sendBooking(BookingInfoDto booking, SocketIOClient socketIODriver) {
@@ -86,16 +109,7 @@ public class SocketHandler {
     }
 
     /**
-     * Gửi tọa độ của driver cho client
-     */
-    @OnEvent(value = EventConstants.TRACK)
-    public void sendTracking(Coordinates coordinates, UUID uuid) {
-        SocketServer.socket.getClient(uuid).sendEvent(EventConstants.TRACK, coordinates);
-    }
-
-    /**
-     * Gửi thông tin lái xe cho khách hàng
-     *
+     * send driver info to client
      * @param
      */
     @OnEvent(value = EventConstants.SEND_DRIVER)
@@ -105,7 +119,6 @@ public class SocketHandler {
 
     /**
      * Send cancel booking info to driver
-     *
      * @param cancelInfo
      * @param socketIOClient
      */

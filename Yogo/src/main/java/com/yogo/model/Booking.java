@@ -40,6 +40,7 @@ public class Booking extends BaseModel {
 
     public BookingInfoDto convert() {
         return new BookingInfoDto().withId(this.getId())
+                .withUserId(this.userId)
                 .withLatStartPoint(this.latStartPoint)
                 .withLonStartPoint(this.lonStartPoint)
                 .withLatEndPoint(this.latEndPoint)
