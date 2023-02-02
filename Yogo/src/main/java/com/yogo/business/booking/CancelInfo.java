@@ -14,4 +14,5 @@ public class CancelInfo {
     private String bookingId;
     private String status = Status.CANCEL.name();
     private String cancelBy;
+    private String reason;
 }

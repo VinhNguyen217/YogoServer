@@ -39,8 +39,9 @@ public class BookingController {
     @PostMapping("/cancelBooking")
     public ResponseEntity<?> cancelBooking(@RequestParam(value = "bookingId") String bookingId,
                                            @RequestParam(value = "driverId") String driverId,
+                                           @RequestParam(value = "reason") String reason,
                                            HttpServletRequest servletRequest) {
-        return ResponseMessage.success(bookingService.cancelBooking(bookingId, driverId, servletRequest));
+        return ResponseMessage.success(bookingService.cancelBooking(bookingId, driverId, reason, servletRequest));
     }
 
     @PostMapping("/finish")
@@ -48,19 +49,4 @@ public class BookingController {
                                            HttpServletRequest servletRequest) {
         return ResponseMessage.success(bookingService.finishBooking(bookingId, servletRequest));
     }
-
-    @PostMapping("/setTracking")
-    public void setTracking(@RequestHeader(value = "session") String sessionKey, @RequestBody Coordinates location,
-                            @RequestParam Integer idUser) {
-//        if (userService.isSessionValid(sessionKey) != null) {
-//
-//            User user1 = userService.isSessionValid(sessionKey);
-//
-//            UUID uuidUser1 = SocketManager.getInstance().map.get(user1.getId());
-//            SocketIOClient socketIOClient = socketIOServer.getClient(uuidUser1);
-//
-//            socket.sendTracking(socketIOClient, location, idUser);
-//        }
-    }
-
 }

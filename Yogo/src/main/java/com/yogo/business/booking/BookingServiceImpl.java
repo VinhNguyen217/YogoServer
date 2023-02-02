@@ -88,11 +88,12 @@ public class BookingServiceImpl implements BookingService {
      *
      * @param bookingId
      * @param driverId
+     * @param reason
      * @param servletRequest
      * @return
      */
     @Override
-    public Booking cancelBooking(String bookingId, String driverId, HttpServletRequest servletRequest) {
+    public Booking cancelBooking(String bookingId, String driverId, String reason, HttpServletRequest servletRequest) {
         UserDto userDto = userService.checkSession(servletRequest);
         Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
         if (bookingOptional.isPresent()) {
@@ -102,7 +103,10 @@ public class BookingServiceImpl implements BookingService {
             SocketDriverManage.getInstance().list.forEach(d -> {
                 if (driverId.equals(d.getUserId())) {
                     d.setStatus(Status.READY);
-                    CancelInfo cancelInfo = new CancelInfo().withBookingId(bookingId).withCancelBy(userDto.getUsername());
+                    CancelInfo cancelInfo = new CancelInfo()
+                            .withBookingId(bookingId)
+                            .withCancelBy(userDto.getUsername())
+                            .withReason(reason);
                     socketHandler.cancelBooing(cancelInfo, d.getSocketIOClient());
                 }
             });
