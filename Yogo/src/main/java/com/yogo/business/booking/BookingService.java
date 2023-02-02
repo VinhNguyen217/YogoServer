@@ -12,7 +12,7 @@ public interface BookingService {
 
     Booking acceptBooking(String bookingId, HttpServletRequest servletRequest);
 
-    Booking cancelBooking(String bookingId, String driverId,String reason, HttpServletRequest servletRequest);
+    Booking cancelBooking(String bookingId, String driverId, Reason reason, HttpServletRequest servletRequest);
 
     Booking finishBooking(String bookingId, HttpServletRequest servletRequest);
 }

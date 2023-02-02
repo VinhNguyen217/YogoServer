@@ -1,6 +1,7 @@
 package com.yogo.controller;
 
 import com.yogo.business.booking.BookingRequest;
+import com.yogo.business.booking.Reason;
 import com.yogo.message.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class BookingController {
     @PostMapping("/cancelBooking")
     public ResponseEntity<?> cancelBooking(@RequestParam(value = "bookingId") String bookingId,
                                            @RequestParam(value = "driverId") String driverId,
-                                           @RequestParam(value = "reason") String reason,
+                                           @RequestBody Reason reason,
                                            HttpServletRequest servletRequest) {
         return ResponseMessage.success(bookingService.cancelBooking(bookingId, driverId, reason, servletRequest));
     }
